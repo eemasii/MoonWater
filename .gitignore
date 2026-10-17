@@ -5,6 +5,7 @@ node_modules/
 dist/
 dist-electron/win-unpacked/
 dist-electron/*.yaml
+dist-electron/*.yml
 dist-electron/*.blockmap
 dist-electron/.*
 
