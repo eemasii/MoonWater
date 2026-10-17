@@ -8,12 +8,12 @@ Diseñada mediante ingeniería inversa sobre `SolarFire.exe`, replica con precis
 
 ## 📥 Descarga Directa de Instaladores (Windows x64)
 
-Los ejecutables compilados se encuentran incluidos en la carpeta [`dist-electron/`](./dist-electron) y en la sección de **Releases** del repositorio:
+Los ejecutables compilados están disponibles directamente en la sección de [**GitHub Releases (v1.0.0)**](https://github.com/eemasii/MoonWater/releases/tag/v1.0.0):
 
-| Edición | Archivo | Tamaño | Descripción |
+| Edición | Enlace de Descarga Directa | Tamaño | Descripción |
 | :--- | :--- | :--- | :--- |
-| **Portable (`.exe`)** | [`dist-electron/Moonwater-Astrology-Portable-1.0.0.exe`](./dist-electron/Moonwater-Astrology-Portable-1.0.0.exe) | ~98.1 MB | Ejecutable autónomo de un solo archivo (no requiere instalación). |
-| **Instalador Setup (`.exe`)** | [`dist-electron/Moonwater-Astrology-Setup-1.0.0.exe`](./dist-electron/Moonwater-Astrology-Setup-1.0.0.exe) | ~98.3 MB | Instalador NSIS de Windows con asistente de ruta, accesos directos y desinstalador. |
+| **Portable (`.exe`)** | [**⬇ Descargar `Moonwater-Astrology-Portable-1.0.0.exe`**](https://github.com/eemasii/MoonWater/releases/download/v1.0.0/Moonwater-Astrology-Portable-1.0.0.exe) | ~98.1 MB | Ejecutable autónomo de un solo archivo (no requiere instalación). |
+| **Instalador Setup (`.exe`)** | [**⬇ Descargar `Moonwater-Astrology-Setup-1.0.0.exe`**](https://github.com/eemasii/MoonWater/releases/download/v1.0.0/Moonwater-Astrology-Setup-1.0.0.exe) | ~98.3 MB | Instalador NSIS de Windows con asistente de ruta, accesos directos y desinstalador. |
 
 ---
 
