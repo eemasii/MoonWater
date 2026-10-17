@@ -1,0 +1,2588 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moonwater Studio — Astrología Computacional (Paridad Solar Fire)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root[data-theme="dark"] {
+      --bg: #070b12;
+      --panel: #0f1624;
+      --panel-alt: #141e30;
+      --panel-border: #1e2d45;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --accent-glow: rgba(56, 189, 248, 0.22);
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --input-bg: #090e18;
+      --badge-soft-bg: rgba(56, 189, 248, 0.15);
+      --badge-soft-fg: #38bdf8;
+      --badge-hard-bg: rgba(248, 113, 113, 0.15);
+      --badge-hard-fg: #f87171;
+      --badge-conj-bg: rgba(251, 191, 36, 0.16);
+      --badge-conj-fg: #fbbf24;
+      --badge-minor-bg: rgba(192, 132, 252, 0.15);
+      --badge-minor-fg: #c084fc;
+      --badge-harm-bg: rgba(45, 212, 191, 0.15);
+      --badge-harm-fg: #2dd4bf;
+      --shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+    }
+
+    :root[data-theme="light"] {
+      --bg: #f1f5f9;
+      --panel: #ffffff;
+      --panel-alt: #f8fafc;
+      --panel-border: #cbd5e1;
+      --accent: #0284c7;
+      --accent-hover: #0369a1;
+      --accent-glow: rgba(2, 132, 199, 0.18);
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #64748b;
+      --input-bg: #f8fafc;
+      --badge-soft-bg: rgba(2, 132, 199, 0.12);
+      --badge-soft-fg: #0369a1;
+      --badge-hard-bg: rgba(220, 38, 38, 0.12);
+      --badge-hard-fg: #dc2626;
+      --badge-conj-bg: rgba(217, 119, 6, 0.14);
+      --badge-conj-fg: #b45309;
+      --badge-minor-bg: rgba(124, 58, 237, 0.12);
+      --badge-minor-fg: #6d28d9;
+      --badge-harm-bg: rgba(13, 148, 136, 0.12);
+      --badge-harm-fg: #0f766e;
+      --shadow: 0 4px 18px rgba(15, 23, 42, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    header {
+      background-color: var(--panel);
+      border-bottom: 1px solid var(--panel-border);
+      padding: 0.65rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .brand { display: flex; align-items: center; gap: 0.65rem; }
+    .brand-icon { font-size: 1.5rem; color: var(--accent); }
+    .brand-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 1.3px;
+      color: var(--text);
+    }
+    .brand-tag {
+      font-size: 0.66rem;
+      background: var(--badge-soft-bg);
+      color: var(--badge-soft-fg);
+      padding: 0.16rem 0.52rem;
+      border-radius: 999px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-actions { display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; }
+    .btn-action {
+      background: var(--panel-alt);
+      border: 1px solid var(--panel-border);
+      color: var(--text);
+      padding: 0.38rem 0.72rem;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.32rem;
+    }
+    .btn-action:hover, .btn-action.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--badge-soft-bg);
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 360px 1fr 475px;
+      gap: 0.9rem;
+      padding: 0.9rem;
+      flex: 1;
+      align-items: start;
+    }
+
+    @media (max-width: 1360px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background-color: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      box-shadow: var(--shadow);
+    }
+
+    .card-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--accent);
+      border-bottom: 1px solid var(--panel-border);
+      padding-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-box {
+      background: var(--panel-alt);
+      border: 1px solid var(--panel-border);
+      padding: 0.65rem;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 0.22rem; }
+    label { font-size: 0.73rem; font-weight: 600; color: var(--text-muted); }
+    input[type="text"], input[type="date"], input[type="time"], input[type="number"], select, textarea {
+      background-color: var(--input-bg);
+      border: 1px solid var(--panel-border);
+      color: var(--text);
+      padding: 0.44rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      outline: none;
+      width: 100%;
+      font-family: inherit;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.42rem; }
+
+    /* Atlas Geocoder Autocomplete */
+    .atlas-wrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0.22rem;
+    }
+    .atlas-input-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .atlas-input-box input { padding-right: 2rem; }
+    .atlas-clear-btn {
+      position: absolute;
+      right: 0.4rem;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.9rem;
+      line-height: 1;
+      padding: 0.2rem;
+      border-radius: 4px;
+    }
+    .atlas-clear-btn:hover { color: var(--text); background: var(--panel-alt); }
+    .atlas-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: var(--panel);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
+      z-index: 150;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+    .atlas-dropdown.open { display: block; }
+    .atlas-item {
+      padding: 0.48rem 0.65rem;
+      border-bottom: 1px solid var(--panel-border);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 0.12rem;
+    }
+    .atlas-item:last-child { border-bottom: none; }
+    .atlas-item:hover, .atlas-item.active { background: var(--badge-soft-bg); }
+    .atlas-item-title { font-size: 0.8rem; font-weight: 700; color: var(--text); }
+    .atlas-item-meta { font-size: 0.7rem; color: var(--text-muted); display: flex; justify-content: space-between; gap: 0.35rem; }
+    .atlas-status { padding: 0.55rem 0.7rem; font-size: 0.76rem; color: var(--text-muted); text-align: center; }
+
+    /* Manual Coordinate Override Collapsible */
+    .coords-details {
+      background: var(--panel-alt);
+      border: 1px solid var(--panel-border);
+      border-radius: 7px;
+      padding: 0.38rem 0.55rem;
+    }
+    .coords-details summary {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--accent);
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      list-style: none;
+    }
+    .coords-details summary::-webkit-details-marker { display: none; }
+    .coords-details[open] summary {
+      margin-bottom: 0.4rem;
+      padding-bottom: 0.3rem;
+      border-bottom: 1px solid var(--panel-border);
+    }
+    .tz-badge {
+      font-size: 0.66rem;
+      font-weight: 600;
+      color: var(--badge-soft-fg);
+      background: var(--badge-soft-bg);
+      padding: 0.1rem 0.38rem;
+      border-radius: 4px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.65rem;
+      font-weight: 700;
+      font-size: 0.86rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: all 0.18s ease;
+    }
+    .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+    /* Live Transit Stepper */
+    .time-stepper {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.3rem;
+    }
+    .step-btn {
+      background: var(--input-bg);
+      border: 1px solid var(--panel-border);
+      color: var(--text);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.32rem 0.18rem;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+    }
+    .step-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .step-btn.now-btn {
+      background: var(--badge-soft-bg);
+      color: var(--badge-soft-fg);
+      border-color: var(--accent);
+    }
+
+    /* Checkboxes Grid for Body Filters */
+    .filter-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.32rem 0.5rem;
+    }
+    .chk-label {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.73rem;
+      color: var(--text);
+      cursor: pointer;
+      user-select: none;
+    }
+    .chk-label input[type="checkbox"] {
+      accent-color: var(--accent);
+      width: 13px;
+      height: 13px;
+      cursor: pointer;
+    }
+
+    /* Center Chart Viewport & Layout Bar */
+    .chart-viewport {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      position: relative;
+      padding: 0.75rem;
+      gap: 0.65rem;
+    }
+    .layout-toolbar {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      border-bottom: 1px solid var(--panel-border);
+      padding-bottom: 0.5rem;
+    }
+    .layout-btn-group {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+
+    #chartSvgBox {
+      width: 100%;
+      max-width: 820px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #chartSvgBox svg, #secondarySvgBox svg, #aspectGridSvgBox svg {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+    }
+    .dual-wheels-container {
+      width: 100%;
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .dual-wheels-container { grid-template-columns: 1fr; }
+    }
+    #aspectGridSvgBox {
+      width: 100%;
+      max-width: 780px;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Return / Meta Banner */
+    .meta-banner {
+      display: none;
+      width: 100%;
+      background: var(--badge-soft-bg);
+      border: 1px solid var(--accent);
+      color: var(--text);
+      padding: 0.48rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Active Planet Filter Pill */
+    .highlight-bar {
+      display: none;
+      width: 100%;
+      background: var(--badge-conj-bg);
+      border: 1px solid var(--badge-conj-fg);
+      color: var(--text);
+      padding: 0.4rem 0.7rem;
+      border-radius: 7px;
+      font-size: 0.76rem;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Right Panel Tabs & Tables */
+    .tab-bar {
+      display: flex;
+      gap: 0.22rem;
+      border-bottom: 1px solid var(--panel-border);
+      padding-bottom: 0.4rem;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      background: var(--panel-alt);
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.34rem 0.55rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .tab-btn:hover { color: var(--text); border-color: var(--panel-border); }
+    .tab-btn.active {
+      background-color: var(--badge-soft-bg);
+      color: var(--badge-soft-fg);
+      border-color: var(--accent);
+    }
+
+    .table-container {
+      overflow-y: auto;
+      max-height: calc(100vh - 210px);
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.76rem; }
+    th {
+      text-align: left;
+      padding: 0.38rem 0.42rem;
+      color: var(--text-dim);
+      font-size: 0.67rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--panel-border);
+      position: sticky;
+      top: 0;
+      background: var(--panel);
+      z-index: 2;
+    }
+    td {
+      padding: 0.45rem 0.5rem;
+      border-bottom: 1px solid var(--panel-border);
+      vertical-align: middle;
+    }
+    tr.clickable-row { cursor: pointer; }
+    tr.clickable-row:hover td { background-color: var(--panel-alt); }
+
+    .badge { padding: 0.12rem 0.4rem; border-radius: 4px; font-weight: 700; font-size: 0.69rem; display: inline-block; }
+    .badge-soft { background: var(--badge-soft-bg); color: var(--badge-soft-fg); }
+    .badge-hard { background: var(--badge-hard-bg); color: var(--badge-hard-fg); }
+    .badge-neutral { background: var(--badge-conj-bg); color: var(--badge-conj-fg); }
+    .badge-minor { background: var(--badge-minor-bg); color: var(--badge-minor-fg); }
+    .badge-harmonic { background: var(--badge-harm-bg); color: var(--badge-harm-fg); }
+
+    .pattern-card {
+      background: var(--panel-alt);
+      border-left: 3px solid var(--accent);
+      padding: 0.52rem 0.68rem;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      margin-bottom: 0.4rem;
+    }
+
+    /* Progress Bars for Elemental & Humor Balance */
+    .bar-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.18rem;
+      margin-bottom: 0.35rem;
+    }
+    .bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.73rem;
+      font-weight: 600;
+    }
+    .bar-track {
+      width: 100%;
+      height: 7px;
+      background: var(--input-bg);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--panel-border);
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+    }
+
+    /* Floating Interactive Tooltip */
+    #chartTooltip {
+      position: fixed;
+      display: none;
+      pointer-events: none;
+      background: rgba(15, 22, 36, 0.96);
+      border: 1px solid #38bdf8;
+      color: #f1f5f9;
+      padding: 0.6rem 0.8rem;
+      border-radius: 8px;
+      font-size: 0.76rem;
+      line-height: 1.45;
+      z-index: 999;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+      max-width: 300px;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(3px);
+    }
+    .modal {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      width: 94%;
+      max-width: 720px;
+      max-height: 86vh;
+      display: flex;
+      flex-direction: column;
+      padding: 1.15rem;
+      gap: 0.85rem;
+      box-shadow: var(--shadow);
+    }
+
+    @media print {
+      header, .left-sidebar, .modal-backdrop, #chartTooltip, .layout-toolbar, .tab-bar { display: none !important; }
+      .main-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+      .table-container { max-height: none !important; overflow: visible !important; display: block !important; page-break-inside: avoid; }
+      #aspectGridSvgBox { display: flex !important; margin-top: 1rem; page-break-before: always; }
+      body { background: #fff; color: #000; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Tooltip for SVG Hover -->
+  <div id="chartTooltip"></div>
+
+  <header>
+    <div class="brand">
+      <div class="brand-icon">✧</div>
+      <div class="brand-title">MOONWATER STUDIO</div>
+      <span class="brand-tag">SOLAR FIRE PARITY • SWISS EPHEMERIS DE441</span>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-action" onclick="toggleTheme()" id="btnTheme">☀️ Modo Claro</button>
+      <button class="btn-action" onclick="openOrbsModal()">🎯 Orbes</button>
+      <button class="btn-action" onclick="openSavedChartsModal()">📁 Base de Datos</button>
+      <button class="btn-action" onclick="saveCurrentChart()">💾 Guardar Carta</button>
+      <button class="btn-action" onclick="downloadSVG()">📥 SVG</button>
+      <button class="btn-action" onclick="exportPNG()">🖼️ PNG (300 DPI)</button>
+      <button class="btn-action" onclick="window.print()">🖨️ Reporte PDF</button>
+    </div>
+  </header>
+
+  <div class="main-grid">
+
+    <!-- LEFT SIDEBAR: PARAMETERS, TECHNIQUES & FILTERS -->
+    <div class="card left-sidebar">
+      <div class="card-title">
+        <span>⚙️ Técnica y Datos Natales</span>
+        <span id="chartTypeLabel" style="font-size: 0.69rem; color: var(--text-muted);">RADIX</span>
+      </div>
+
+      <div class="form-group">
+        <label for="selChartMode">Técnica / Tipo de Carta (19 Modos Solar Fire)</label>
+        <select id="selChartMode" onchange="onChartModeChange()">
+          <optgroup label="Natales y Dinámicos">
+            <option value="natal" selected>1. Carta Natal (Radix)</option>
+            <option value="transits">2. Tránsitos Dinámicos (Bi-Wheel)</option>
+            <option value="tri_wheel">3. Tri-Rueda: Natal + Progresión + Tránsito</option>
+          </optgroup>
+          <optgroup label="Retornos Planetarios">
+            <option value="solar_return">4. Revolución Solar (Retorno Exacto)</option>
+            <option value="lunar_return">5. Revolución Lunar (Retorno Exacto)</option>
+          </optgroup>
+          <optgroup label="Progresiones y Direcciones">
+            <option value="secondary_progressions">6. Progresiones Secundarias (1d = 1a)</option>
+            <option value="tertiary_progressions">7. Progresiones Terciarias (1d = 1 mes lunar)</option>
+            <option value="minor_progressions">8. Progresiones Menores (1 mes lunar = 1a)</option>
+            <option value="solar_arc">9. Direcciones por Arco Solar</option>
+            <option value="naibod_arc">10. Direcciones por Arco Naibod (0°59'08"/a)</option>
+            <option value="symbolic_directions">11. Direcciones Simbólicas Ptolomeo (1°/a)</option>
+            <option value="profections">12. Profecciones Anuales (30°/año)</option>
+          </optgroup>
+          <optgroup label="Armónicas, Antiscia y Védico (Vargas)">
+            <option value="harmonic">13. Carta Armónica (H1..H360)</option>
+            <option value="antiscia">14. Antiscia (Reflejo Solsticial 0°♋/♑)</option>
+            <option value="contra_antiscia">15. Contra-Antiscia (Reflejo Equinoccial 0°♈/♎)</option>
+            <option value="varga">16. Carta Divisional Védica / Varga (D2..D60)</option>
+          </optgroup>
+          <optgroup label="Sinastría y Relacionales">
+            <option value="synastry">17. Sinastría de Pareja (Bi-Wheel)</option>
+            <option value="composite">18. Carta Compuesta (Midpoints)</option>
+            <option value="davison">19. Carta Davison (Espacio-Tiempo Medio)</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="txtName">Nombre / Etiqueta</label>
+          <input type="text" id="txtName" value="Carta Natal">
+        </div>
+        <div class="form-group">
+          <label for="selRodden">Rodden / Categoría</label>
+          <div style="display:flex; gap:0.25rem;">
+            <select id="selRodden" title="Clasificación Rodden de exactitud de hora" style="width:45%;">
+              <option value="AA" selected>AA (Acta)</option>
+              <option value="A">A (Memoria)</option>
+              <option value="B">B (Biografía)</option>
+              <option value="C">C (Aprox)</option>
+              <option value="DD">DD (Dudosa)</option>
+              <option value="X">X (Sin hora)</option>
+            </select>
+            <select id="selCategory" title="Categoría de carta" style="width:55%;">
+              <option value="Male" selected>Masculino</option>
+              <option value="Female">Femenino</option>
+              <option value="Event">Evento</option>
+              <option value="Horary">Horaria</option>
+              <option value="Mundane">Mundana</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="txtDate">Fecha Natal</label>
+          <input type="date" id="txtDate" value="1990-05-15" onchange="onNatalDateOrTimeChange()">
+        </div>
+        <div class="form-group">
+          <label for="txtTime">Hora Natal</label>
+          <input type="time" id="txtTime" step="60" value="14:30" onchange="onNatalDateOrTimeChange()">
+        </div>
+      </div>
+
+      <div class="atlas-wrapper">
+        <label for="citySearch">🌍 Buscador de Atlas / Ciudad Natal</label>
+        <div class="atlas-input-box">
+          <input
+            type="text"
+            id="citySearch"
+            placeholder="Buscar ciudad (ej. Posadas, Misiones)..."
+            value="Buenos Aires, Ciudad Autónoma de Buenos Aires, Argentina"
+            data-timezone="America/Argentina/Buenos_Aires"
+            autocomplete="off"
+          >
+          <button type="button" class="atlas-clear-btn" onclick="clearCityInput('citySearch', 'citySuggestions')" title="Limpiar búsqueda">&times;</button>
+        </div>
+        <div id="citySuggestions" class="atlas-dropdown"></div>
+      </div>
+
+      <details class="coords-details">
+        <summary>
+          <span>📍 Coordenadas y Notas</span>
+          <span id="tzLabelBadge" class="tz-badge">America/Argentina/Buenos_Aires (UTC-3)</span>
+        </summary>
+        <div class="form-row-3" style="margin-bottom:0.4rem;">
+          <div class="form-group">
+            <label for="txtLat">Latitud (°)</label>
+            <input type="number" step="0.0001" id="txtLat" value="-34.6037">
+          </div>
+          <div class="form-group">
+            <label for="txtLon">Longitud (°)</label>
+            <input type="number" step="0.0001" id="txtLon" value="-58.3816">
+          </div>
+          <div class="form-group">
+            <label for="txtTz">UTC Offset</label>
+            <input type="number" step="0.25" id="txtTz" value="-3">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="txtNotes">Notas biográficas / Eventos</label>
+          <input type="text" id="txtNotes" placeholder="Notas opcionales para guardar en la ficha...">
+        </div>
+      </details>
+
+      <!-- DYNAMIC BOX A: Transits / Progressions / Directions / Tri-Wheel Date -->
+      <div id="transitBox" class="section-box" style="display: none;">
+        <div class="section-label" id="lblTransitHeader">⏱️ Fecha de Evento / Progresión / Dirección</div>
+        <div class="form-row">
+          <input type="date" id="txtTransitDate" value="2026-10-17" onchange="calculateChart()">
+          <input type="time" id="txtTransitTime" value="12:00" onchange="calculateChart()">
+        </div>
+        <div class="time-stepper">
+          <button class="step-btn" onclick="stepTime(-1, 'year')">-1A</button>
+          <button class="step-btn" onclick="stepTime(-1, 'month')">-1M</button>
+          <button class="step-btn" onclick="stepTime(-1, 'day')">-1D</button>
+          <button class="step-btn" onclick="stepTime(-1, 'hour')">-1H</button>
+          <button class="step-btn now-btn" onclick="setTransitNow()">⚡ Ahora</button>
+          <button class="step-btn" onclick="stepTime(1, 'hour')">+1H</button>
+          <button class="step-btn" onclick="stepTime(1, 'day')">+1D</button>
+          <button class="step-btn" onclick="stepTime(1, 'month')">+1M</button>
+          <button class="step-btn" onclick="stepTime(1, 'year')">+1A</button>
+        </div>
+        <div id="directionExtraBox" style="display:none; gap:0.4rem; align-items:center; padding-top:0.25rem;">
+          <label class="chk-label" id="lblSolarArcRA" style="display:none;">
+            <input type="checkbox" id="chkSolarArcRA" onchange="calculateChart()"> Arco Solar en Ascensión Recta (AR)
+          </label>
+          <div class="form-group" id="symbolicFactorGroup" style="display:none; width:100%;">
+            <label for="txtSymbolicFactor">Factor de Dirección Simbólica (°/año)</label>
+            <input type="number" step="0.05" id="txtSymbolicFactor" value="1.0" onchange="calculateChart()">
+          </div>
+        </div>
+      </div>
+
+      <!-- DYNAMIC BOX B: Solar / Lunar Return Year & Relocation -->
+      <div id="returnBox" class="section-box" style="display: none;">
+        <div class="section-label">☀️ Parámetros de Revolución</div>
+        <div class="form-group" id="returnYearGroup">
+          <label for="txtReturnYear">Año de Revolución Solar</label>
+          <div class="form-row">
+            <input type="number" id="txtReturnYear" value="2026" min="1800" max="2399" onchange="calculateChart()">
+            <div style="display:flex; gap:0.35rem;">
+              <button class="step-btn" style="flex:1;" onclick="stepReturnYear(-1)">-1 Año</button>
+              <button class="step-btn" style="flex:1;" onclick="stepReturnYear(1)">+1 Año</button>
+            </div>
+          </div>
+        </div>
+        <label class="chk-label" style="margin-top:0.2rem;">
+          <input type="checkbox" id="chkRelocated" onchange="onRelocatedToggle()">
+          <span>Relocalizar Revolución en otra ciudad</span>
+        </label>
+        <div id="relocFields" style="display: none; flex-direction: column; gap: 0.45rem; margin-top: 0.25rem;">
+          <div class="atlas-wrapper">
+            <div class="atlas-input-box">
+              <input
+                type="text"
+                id="relocCitySearch"
+                placeholder="Buscar ciudad de relocalización..."
+                value="Buenos Aires, Argentina"
+                data-timezone="America/Argentina/Buenos_Aires"
+                autocomplete="off"
+              >
+              <button type="button" class="atlas-clear-btn" onclick="clearCityInput('relocCitySearch', 'relocCitySuggestions')">&times;</button>
+            </div>
+            <div id="relocCitySuggestions" class="atlas-dropdown"></div>
+          </div>
+          <div class="form-row-3">
+            <input type="number" step="0.0001" id="txtRelocLat" value="-34.6037" placeholder="Lat">
+            <input type="number" step="0.0001" id="txtRelocLon" value="-58.3816" placeholder="Lon">
+            <input type="number" step="0.25" id="txtRelocTz" value="-3" placeholder="UTC">
+          </div>
+        </div>
+      </div>
+
+      <!-- DYNAMIC BOX C: Harmonics & Vedic Varga Selector -->
+      <div id="harmonicVargaBox" class="section-box" style="display: none;">
+        <div class="section-label">🔢 Parámetro Armónico / Divisional Védico</div>
+        <div class="form-group" id="harmonicNumGroup" style="display:none;">
+          <label for="txtHarmonicNum">Número Armónico H (1 a 360)</label>
+          <input type="number" id="txtHarmonicNum" min="1" max="360" value="9" onchange="calculateChart()">
+        </div>
+        <div class="form-group" id="vargaSelectGroup" style="display:none;">
+          <label for="selVargaDiv">Carta Divisional Varga (Jyotish)</label>
+          <select id="selVargaDiv" onchange="calculateChart()">
+            <option value="2">D-2 Hora (Riqueza y Sustento)</option>
+            <option value="3">D-3 Drekkana (Hermanos y Valor)</option>
+            <option value="7">D-7 Saptamsha (Hijos y Creatividad)</option>
+            <option value="9" selected>D-9 Navamsha (Matrimonio y Dharma)</option>
+            <option value="10">D-10 Dashamsha (Carrera y Profesión)</option>
+            <option value="12">D-12 Dwadashamsha (Padres y Linaje)</option>
+            <option value="60">D-60 Shashtiamsha (Síntesis Kármica)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- DYNAMIC BOX D: Partner Data (Synastry / Composite / Davison) -->
+      <div id="partnerBox" class="section-box" style="display: none;">
+        <div class="section-label">👥 Datos de la Segunda Persona</div>
+        <div class="form-group">
+          <label for="txtPartnerName">Nombre Persona 2</label>
+          <input type="text" id="txtPartnerName" value="Persona 2">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="txtPartnerDate">Fecha</label>
+            <input type="date" id="txtPartnerDate" value="1992-08-22">
+          </div>
+          <div class="form-group">
+            <label for="txtPartnerTime">Hora</label>
+            <input type="time" id="txtPartnerTime" value="18:15">
+          </div>
+        </div>
+        <div class="atlas-wrapper">
+          <label for="partnerCitySearch">Ciudad Natal Persona 2</label>
+          <div class="atlas-input-box">
+            <input
+              type="text"
+              id="partnerCitySearch"
+              placeholder="Buscar ciudad..."
+              value="Buenos Aires, Argentina"
+              data-timezone="America/Argentina/Buenos_Aires"
+              autocomplete="off"
+            >
+            <button type="button" class="atlas-clear-btn" onclick="clearCityInput('partnerCitySearch', 'partnerCitySuggestions')">&times;</button>
+          </div>
+          <div id="partnerCitySuggestions" class="atlas-dropdown"></div>
+        </div>
+        <div class="form-row-3">
+          <input type="number" step="0.0001" id="txtPartnerLat" value="-34.6037" placeholder="Lat">
+          <input type="number" step="0.0001" id="txtPartnerLon" value="-58.3816" placeholder="Lon">
+          <input type="number" step="0.25" id="txtPartnerTz" value="-3" placeholder="UTC">
+        </div>
+      </div>
+
+      <!-- House System (15 Systems), Zodiac (7 Ayanamshas) & Coordinate Center -->
+      <div class="form-row-3">
+        <div class="form-group">
+          <label for="selHouseSys">Casas (15)</label>
+          <select id="selHouseSys" onchange="calculateChart()">
+            <optgroup label="Cuadrantes">
+              <option value="P" selected>Placidus (P)</option>
+              <option value="K">Koch (K)</option>
+              <option value="R">Regiomontanus (R)</option>
+              <option value="C">Campanus (C)</option>
+              <option value="T">Topocéntrico (T)</option>
+              <option value="O">Porphyry (O)</option>
+              <option value="B">Alcabitius (B)</option>
+              <option value="M">Morinus (M)</option>
+              <option value="X">Meridian (X)</option>
+            </optgroup>
+            <optgroup label="Iguales y Derivadas">
+              <option value="A">Casas Iguales (A)</option>
+              <option value="W">Whole Signs (W)</option>
+              <option value="H">Hindu Bhava / Sripati (H)</option>
+              <option value="S">Carta Solar / Sol en 1ª (S)</option>
+              <option value="L">Luna en 1ª (L)</option>
+              <option value="Z">0° Aries (Z)</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="selZodiac">Zodíaco</label>
+          <select id="selZodiac" onchange="onZodiacChange()">
+            <option value="tropical" selected>Tropical</option>
+            <option value="sidereal">Sideral</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="selCoordMode">Centro</label>
+          <select id="selCoordMode" onchange="calculateChart()">
+            <option value="geocentric" selected>Geocéntrico</option>
+            <option value="topocentric">Topocéntrico</option>
+            <option value="heliocentric">Heliocéntrico</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group" id="ayanBox" style="display: none;">
+        <label for="selAyan">Ayanamsha Sideral (7 Sistemas)</label>
+        <select id="selAyan" onchange="calculateChart()">
+          <option value="1" selected>Lahiri (Chitrapaksha)</option>
+          <option value="0">Fagan / Bradley</option>
+          <option value="3">B.V. Raman</option>
+          <option value="5">Krishnamurti (KP)</option>
+          <option value="2">De Luce</option>
+          <option value="7">Sri Yukteshwar</option>
+          <option value="27">True Citra (Spica 0° Libra)</option>
+        </select>
+      </div>
+
+      <!-- Body & Aspect Quick Filters -->
+      <div class="section-box">
+        <div class="section-label">🪐 Catálogo de Cuerpos y Puntos</div>
+        <div class="filter-grid">
+          <label class="chk-label"><input type="checkbox" class="grp-chk" value="luminaries" checked onchange="calculateChart()"> Luminarias (☉ ☽)</label>
+          <label class="chk-label"><input type="checkbox" class="grp-chk" value="traditional" checked onchange="calculateChart()"> Tradicionales (☿..♄)</label>
+          <label class="chk-label"><input type="checkbox" class="grp-chk" value="modern" checked onchange="calculateChart()"> Modernos (♅ ♆ ♇)</label>
+          <label class="chk-label"><input type="checkbox" class="grp-chk" value="chiron" checked onchange="calculateChart()"> Quirón (⚷)</label>
+          <label class="chk-label"><input type="checkbox" class="grp-chk" value="lilith" checked onchange="calculateChart()"> Lilith M/V (⚸)</label>
+          <label class="chk-label"><input type="checkbox" class="grp-chk" value="asteroids" checked onchange="calculateChart()"> 6 Asteroides (⚳..⚖)</label>
+          <label class="chk-label"><input type="checkbox" class="grp-chk" value="tno" onchange="calculateChart()"> TNOs: Eris / Sedna</label>
+          <label class="chk-label"><input type="checkbox" class="grp-chk" value="uranian" onchange="calculateChart()"> 8 Uranianos (Hamburgo)</label>
+          <label class="chk-label"><input type="checkbox" class="grp-chk" value="nodes" checked onchange="calculateChart()"> Nodos (☊ ☋)</label>
+          <label class="chk-label"><input type="checkbox" class="grp-chk" value="arabic" checked onchange="calculateChart()"> Parte Fortuna (⊗)</label>
+          <label class="chk-label"><input type="checkbox" class="grp-chk" value="vertices" onchange="calculateChart()"> Vértices (Vx/AVx/EP)</label>
+        </div>
+        <div style="border-top: 1px solid var(--panel-border); padding-top: 0.42rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
+          <label class="chk-label"><input type="checkbox" id="chkMinorAspects" checked onchange="calculateChart()"> Aspectos Menores</label>
+          <label class="chk-label"><input type="checkbox" id="chkHarmonicAspects" onchange="calculateChart()"> Quintil/Septil/Novil</label>
+          <label class="chk-label"><input type="checkbox" id="chkTrueNode" checked onchange="calculateChart()"> Nodo Verdadero</label>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="calculateChart()">
+        <span>✦</span> Calcular Carta Ahora
+      </button>
+    </div>
+
+    <!-- CENTER VIEWPORT: INTERACTIVE SVG WHEEL & PAGE LAYOUT SWITCHER -->
+    <div class="card chart-viewport">
+      <div class="layout-toolbar">
+        <div class="layout-btn-group">
+          <button class="btn-action active" id="btnLayoutWheel" onclick="setPageLayout('wheel')">🎡 Rueda Central</button>
+          <button class="btn-action" id="btnLayoutWheelGrid" onclick="setPageLayout('wheel_grid')">📐 Rueda + Escalera</button>
+          <button class="btn-action" id="btnLayoutDual" onclick="setPageLayout('dual_wheels')">⚖️ Ruedas Dobles</button>
+          <button class="btn-action" id="btnLayoutGridOnly" onclick="setPageLayout('grid_only')">📊 Escalera de Aspectos</button>
+        </div>
+        <span id="sectBadge" class="badge badge-neutral">☀️ Carta Diurna</span>
+      </div>
+
+      <div class="meta-banner" id="metaBanner">
+        <span id="metaBannerText"></span>
+        <span style="font-size:0.7rem; color:var(--text-muted);">Clic en cualquier planeta para aislar sus aspectos</span>
+      </div>
+
+      <div class="highlight-bar" id="highlightBar">
+        <span>🔍 Resaltando aspectos de: <strong id="highlightPlanetName"></strong></span>
+        <button class="btn-action" style="padding:0.18rem 0.5rem;" onclick="clearPlanetHighlight()">Mostrar Todos</button>
+      </div>
+
+      <!-- Primary Single/Bi/Tri Wheel View -->
+      <div id="chartSvgBox"></div>
+
+      <!-- Dual Wheels Side-by-Side View -->
+      <div class="dual-wheels-container" id="dualWheelsBox">
+        <div id="dualLeftSvgBox"></div>
+        <div id="secondarySvgBox"></div>
+      </div>
+
+      <!-- Classic Solar Fire Triangular Staircase Aspect Grid -->
+      <div id="aspectGridSvgBox"></div>
+
+      <div style="width:100%; display:flex; justify-content:space-between; flex-wrap:wrap; gap:0.4rem; font-size:0.74rem; color:var(--text-muted); border-top:1px solid var(--panel-border); padding-top:0.5rem;">
+        <div>
+          ASC: <strong id="lblAsc" style="color:var(--accent);">-</strong> •
+          MC: <strong id="lblMC" style="color:var(--accent);">-</strong> •
+          Vertex: <strong id="lblVtx" style="color:var(--accent);">-</strong> •
+          East Pt: <strong id="lblEP" style="color:var(--accent);">-</strong>
+        </div>
+        <div>Sizigia Prenatal: <strong id="lblSyzygy" style="color:var(--accent);">-</strong></div>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR: SOLAR FIRE ANALYSIS TABS -->
+    <div class="card">
+      <div class="tab-bar">
+        <button class="tab-btn active" id="btnTabPlanets" onclick="switchTab('planets')">🪐 Posiciones (<span id="cntPlanets">0</span>)</button>
+        <button class="tab-btn" id="btnTabAspects" onclick="switchTab('aspects')">📐 Aspectos (<span id="cntAspects">0</span>)</button>
+        <button class="tab-btn" id="btnTabDignities" onclick="switchTab('dignities')">👑 Dignidades & Almuten</button>
+        <button class="tab-btn" id="btnTabBalances" onclick="switchTab('balances')">🔥 Balances & Firdaria</button>
+        <button class="tab-btn" id="btnTabMidpoints" onclick="switchTab('midpoints')">🌳 Midpoints & Estrellas</button>
+        <button class="tab-btn" id="btnTabVedic" onclick="switchTab('vedic')">🕉️ Védico & Lotes</button>
+        <button class="tab-btn" id="btnTabHitList" onclick="switchTab('hitlist')">⏳ Hit-List Tránsitos</button>
+        <button class="tab-btn" id="btnTabHouses" onclick="switchTab('houses')">🏛️ Casas (12)</button>
+      </div>
+
+      <!-- TAB 1: PLANETS (ECLIPTIC, EQUATORIAL RA/DEC & OUT OF BOUNDS) -->
+      <div class="table-container" id="tabPlanets">
+        <table>
+          <thead>
+            <tr>
+              <th>Cuerpo</th>
+              <th>Long. Eclíptica</th>
+              <th>Casa</th>
+              <th>Declinación / AR</th>
+              <th>Vel / OOB</th>
+            </tr>
+          </thead>
+          <tbody id="planetsTbody"></tbody>
+        </table>
+      </div>
+
+      <!-- TAB 2: ASPECTS (ECLIPTIC + DECLINATION PARALLELS + PATTERNS) -->
+      <div class="table-container" id="tabAspects" style="display: none;">
+        <div class="section-label"> Configuración de Patrones Cerrados (<span id="cntPatterns">0</span>)</div>
+        <div id="patternsListBox"></div>
+
+        <div class="section-label" style="margin-top:0.35rem;"> Aspectos Eclípticos (A = Aplicativo, S = Separativo)</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Aspecto</th>
+              <th>Ángulo</th>
+              <th>Orbe</th>
+              <th>Dinámica</th>
+            </tr>
+          </thead>
+          <tbody id="aspectsTbody"></tbody>
+        </table>
+
+        <div class="section-label" style="margin-top:0.5rem;"> Paralelos (‖) y Contraparalelos (⧺) de Declinación</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Cuerpos</th>
+              <th>Tipo</th>
+              <th>Decl. 1 / Decl. 2</th>
+              <th>Orbe</th>
+            </tr>
+          </thead>
+          <tbody id="declAspectsTbody"></tbody>
+        </table>
+      </div>
+
+      <!-- TAB 3: ESSENTIAL & ACCIDENTAL DIGNITIES + ALMUTEN FIGURIS -->
+      <div class="table-container" id="tabDignities" style="display: none;">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="selTripScheme">Esquema de Triplicidades</label>
+            <select id="selTripScheme" onchange="calculateChart()">
+              <option value="dorotheus" selected>Doroteo de Sidón</option>
+              <option value="ptolemy">Claudio Ptolomeo</option>
+              <option value="lilly">William Lilly</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="selTermScheme">Esquema de Términos</label>
+            <select id="selTermScheme" onchange="calculateChart()">
+              <option value="egyptian" selected>Términos Egipcios</option>
+              <option value="ptolemaic">Términos Ptolemaicos</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pattern-card" id="almutenWinnerCard"></div>
+
+        <div class="section-label">Tabla de Dignidades Esenciales y Accidentales</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Planeta</th>
+              <th>Dom</th>
+              <th>Exa</th>
+              <th>Tri</th>
+              <th>Tér</th>
+              <th>Dec</th>
+              <th>Estado / Casa</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="dignitiesTbody"></tbody>
+        </table>
+
+        <div class="section-label" style="margin-top:0.4rem;">Cálculo de Almuten Figuris (5 Puntos Hylegiales)</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Planeta</th>
+              <th>Pts Esenciales</th>
+              <th>Pts Casa</th>
+              <th>Día/Hora</th>
+              <th>Total Almuten</th>
+            </tr>
+          </thead>
+          <tbody id="almutenTbody"></tbody>
+        </table>
+      </div>
+
+      <!-- TAB 4: ELEMENTAL BALANCE, TEMPERAMENT, PROFECTED LORD & FIRDARIA -->
+      <div class="table-container" id="tabBalances" style="display: none;">
+        <div class="pattern-card" id="profectionCard"></div>
+        <div class="section-box" id="balanceBarsBox"></div>
+
+        <div class="section-label">Periodos Planetarios de Firdaria (Ciclo de 75 Años)</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Regente Mayor</th>
+              <th>Edad / Años</th>
+              <th>Sub-Periodos (7 Regentes)</th>
+            </tr>
+          </thead>
+          <tbody id="firdariaTbody"></tbody>
+        </table>
+      </div>
+
+      <!-- TAB 5: MIDPOINT TREES (360°, 90°, 45°) & 30 FIXED STARS -->
+      <div class="table-container" id="tabMidpoints" style="display: none;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span class="section-label">🌳 Árboles de Puntos Medios (A/B = C)</span>
+          <select id="selMidpointDial" style="width:165px;" onchange="renderMidpointsView()">
+            <option value="dial90" selected>Dial 90° (Uraniano)</option>
+            <option value="dial45">Dial 45° (Octil/Semioctil)</option>
+            <option value="dial360">Dial 360° (Conjunción)</option>
+          </select>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Estructura (A / B = C)</th>
+              <th>Punto Medio</th>
+              <th>Orbe</th>
+            </tr>
+          </thead>
+          <tbody id="midpointsTbody"></tbody>
+        </table>
+
+        <div class="section-label" style="margin-top:0.5rem;">⭐ Conjunciones Activas con Estrellas Fijas (Orbe ≤ 1.5°)</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Estrella Fija</th>
+              <th>Constelación / Mag</th>
+              <th>Planeta / Ángulo</th>
+              <th>Orbe</th>
+            </tr>
+          </thead>
+          <tbody id="starConjTbody"></tbody>
+        </table>
+
+        <details class="coords-details">
+          <summary><span>🌌 Ver Catálogo Completo de 30 Estrellas Fijas</span></summary>
+          <table>
+            <thead>
+              <tr>
+                <th>Estrella</th>
+                <th>Posición Eclíptica</th>
+                <th>Decl.</th>
+                <th>Naturaleza</th>
+              </tr>
+            </thead>
+            <tbody id="allStarsTbody"></tbody>
+          </table>
+        </details>
+      </div>
+
+      <!-- TAB 6: VEDIC NAKSHATRAS, DIVISIONAL VARGAS & 8 ARABIC PARTS -->
+      <div class="table-container" id="tabVedic" style="display: none;">
+        <div class="section-label">🕉️ Mansiones Lunares (27 Nakshatras) y Vargas (D1..D60)</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Cuerpo</th>
+              <th>Nakshatra (Pada)</th>
+              <th>Regente</th>
+              <th>D1</th>
+              <th>D9 (Navamsha)</th>
+              <th>D10</th>
+              <th>D60</th>
+            </tr>
+          </thead>
+          <tbody id="nakshatrasTbody"></tbody>
+        </table>
+
+        <div class="section-label" style="margin-top:0.5rem;">🏺 Los 8 Partes Arábigos / Lotes Herméticos</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Lote / Parte</th>
+              <th>Posición</th>
+              <th>Casa</th>
+              <th>Regente / Almuten</th>
+            </tr>
+          </thead>
+          <tbody id="arabicPartsTbody"></tbody>
+        </table>
+      </div>
+
+      <!-- TAB 7: CHRONOLOGICAL DYNAMIC TRANSIT HIT-LIST SCANNER -->
+      <div class="table-container" id="tabHitList" style="display: none;">
+        <div class="section-box">
+          <div class="section-label">⏳ Escáner Cronológico de Aspectos Exactos (Hit-List)</div>
+          <div class="form-row-3">
+            <div class="form-group">
+              <label for="txtHitStart">Fecha Inicio</label>
+              <input type="date" id="txtHitStart" value="2026-10-01">
+            </div>
+            <div class="form-group">
+              <label for="selHitSpan">Ventana</label>
+              <select id="selHitSpan">
+                <option value="7">7 Días</option>
+                <option value="30" selected>30 Días (1 Mes)</option>
+                <option value="90">90 Días (3 Meses)</option>
+                <option value="180">180 Días (6 Meses)</option>
+                <option value="365">365 Días (1 Año)</option>
+              </select>
+            </div>
+            <div class="form-group" style="justify-content:flex-end;">
+              <button class="btn-primary" style="padding:0.46rem;" onclick="runTransitHitScanner()">🔎 Escanear</button>
+            </div>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha y Hora Exacta</th>
+              <th>Tránsito</th>
+              <th>Asp</th>
+              <th>Punto Natal</th>
+              <th>Grado Exacto</th>
+            </tr>
+          </thead>
+          <tbody id="hitListTbody">
+            <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:1rem;">Presiona "Escanear" para calcular la lista cronológica de aspectos exactos en el período.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- TAB 8: HOUSE CUSPS & ALMUTENS -->
+      <div class="table-container" id="tabHouses" style="display: none;">
+        <table>
+          <thead>
+            <tr>
+              <th>Cúspide</th>
+              <th>Signo</th>
+              <th>Grado Exacto</th>
+              <th>Regente / Almuten</th>
+            </tr>
+          </thead>
+          <tbody id="housesTbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MODAL 1: CONFIGURACIÓN DE ORBES -->
+  <div class="modal-backdrop" id="orbsModal">
+    <div class="modal">
+      <div class="card-title">
+        <span>🎯 Configuración de Orbes por Aspecto</span>
+        <button onclick="closeOrbsModal()" style="background:none;border:none;color:var(--text);cursor:pointer;font-size:1.25rem;">&times;</button>
+      </div>
+      <p style="font-size:0.76rem; color:var(--text-muted);">
+        Ajusta el orbe máximo en grados para planetas generales y para luminarias (Sol y Luna).
+      </p>
+      <div class="table-container" style="max-height: 52vh;">
+        <table>
+          <thead>
+            <tr>
+              <th>Aspecto</th>
+              <th>Ángulo</th>
+              <th>Orbe Normal (°)</th>
+              <th>Orbe Luminarias (°)</th>
+            </tr>
+          </thead>
+          <tbody id="orbsConfigTbody"></tbody>
+        </table>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-top:0.4rem;">
+        <button class="btn-action" onclick="resetDefaultOrbs()">Restaurar Predeterminados</button>
+        <button class="btn-primary" style="padding:0.5rem 1.2rem;" onclick="applyCustomOrbs()">Aplicar y Recalcular</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: ARCHIVO DE CARTAS GUARDADAS (CON RODDEN RATING Y BÚSQUEDA) -->
+  <div class="modal-backdrop" id="chartsModal">
+    <div class="modal">
+      <div class="card-title">
+        <span>📁 Base de Datos Local de Cartas (Estilo Solar Fire)</span>
+        <button onclick="closeSavedChartsModal()" style="background:none;border:none;color:var(--text);cursor:pointer;font-size:1.25rem;">&times;</button>
+      </div>
+      <input type="text" id="txtDbSearch" placeholder="🔎 Filtrar por nombre, ciudad, categoría o Rodden Rating..." oninput="filterSavedChartsTable()">
+      <div class="table-container" style="flex: 1; max-height: 52vh;">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre / Notas</th>
+              <th>Rodden / Cat</th>
+              <th>Fecha y Hora</th>
+              <th>Ubicación</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="savedChartsTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="exportCanvas" style="display: none;"></canvas>
+
+  <script>
+    let currentTheme = 'dark';
+    let currentPageLayout = 'wheel'; // 'wheel' | 'wheel_grid' | 'dual_wheels' | 'grid_only'
+    let selectedHighlightPlanet = null;
+    let customOrbsState = null;
+    let lastCalculationData = null;
+    let cachedSavedCharts = [];
+
+    const DEFAULT_ORBS_SPEC = [
+      { type: 'Conjunction', glyph: '☌', name: 'Conjunción', angle: 0, orb: 8, luminary: 10 },
+      { type: 'Opposition', glyph: '☍', name: 'Oposición', angle: 180, orb: 8, luminary: 10 },
+      { type: 'Trine', glyph: '△', name: 'Trígono', angle: 120, orb: 8, luminary: 10 },
+      { type: 'Square', glyph: '□', name: 'Cuadratura', angle: 90, orb: 7, luminary: 8 },
+      { type: 'Sextile', glyph: '⚹', name: 'Sextil', angle: 60, orb: 5, luminary: 6 },
+      { type: 'Quincunx', glyph: '⚻', name: 'Quincuncio', angle: 150, orb: 3, luminary: 4 },
+      { type: 'Semisquare', glyph: '∠', name: 'Semicuadratura', angle: 45, orb: 2, luminary: 3 },
+      { type: 'Sesquisquare', glyph: '⚼', name: 'Sesquicuadratura', angle: 135, orb: 2, luminary: 3 },
+      { type: 'Semisextile', glyph: '⚺', name: 'Semisextil', angle: 30, orb: 2, luminary: 3 },
+      { type: 'Quintile', glyph: 'Q', name: 'Quintil', angle: 72, orb: 2, luminary: 2.5 },
+      { type: 'Biquintile', glyph: 'bQ', name: 'Biquintil', angle: 144, orb: 2, luminary: 2.5 },
+      { type: 'Septile', glyph: 'S', name: 'Septil', angle: 51.43, orb: 1.5, luminary: 2 },
+      { type: 'Novile', glyph: 'N', name: 'Novil', angle: 40, orb: 1.5, luminary: 2 },
+    ];
+
+    function initOrbsTable() {
+      const tbody = document.getElementById('orbsConfigTbody');
+      tbody.innerHTML = '';
+      DEFAULT_ORBS_SPEC.forEach(item => {
+        const cur = customOrbsState?.[item.type] || { orb: item.orb, luminary: item.luminary };
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${item.glyph} ${item.name}</strong></td>
+          <td>${item.angle}°</td>
+          <td><input type="number" step="0.5" min="0" max="18" id="orb_norm_${item.type}" value="${cur.orb}" style="width:80px;"></td>
+          <td><input type="number" step="0.5" min="0" max="20" id="orb_lum_${item.type}" value="${cur.luminary}" style="width:80px;"></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openOrbsModal() {
+      initOrbsTable();
+      document.getElementById('orbsModal').style.display = 'flex';
+    }
+
+    function closeOrbsModal() {
+      document.getElementById('orbsModal').style.display = 'none';
+    }
+
+    function resetDefaultOrbs() {
+      customOrbsState = null;
+      initOrbsTable();
+    }
+
+    function applyCustomOrbs() {
+      customOrbsState = {};
+      DEFAULT_ORBS_SPEC.forEach(item => {
+        const o = parseFloat(document.getElementById(`orb_norm_${item.type}`).value);
+        const l = parseFloat(document.getElementById(`orb_lum_${item.type}`).value);
+        customOrbsState[item.type] = {
+          orb: isNaN(o) ? item.orb : o,
+          luminary: isNaN(l) ? item.luminary : l,
+        };
+      });
+      closeOrbsModal();
+      calculateChart();
+    }
+
+    function toggleTheme() {
+      currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', currentTheme);
+      document.getElementById('btnTheme').textContent = currentTheme === 'dark' ? '☀️ Modo Claro' : '🌙 Modo Oscuro';
+      calculateChart();
+    }
+
+    function setPageLayout(layout) {
+      currentPageLayout = layout;
+      document.getElementById('btnLayoutWheel').classList.toggle('active', layout === 'wheel');
+      document.getElementById('btnLayoutWheelGrid').classList.toggle('active', layout === 'wheel_grid');
+      document.getElementById('btnLayoutDual').classList.toggle('active', layout === 'dual_wheels');
+      document.getElementById('btnLayoutGridOnly').classList.toggle('active', layout === 'grid_only');
+
+      const singleBox = document.getElementById('chartSvgBox');
+      const dualBox = document.getElementById('dualWheelsBox');
+      const gridBox = document.getElementById('aspectGridSvgBox');
+
+      if (layout === 'wheel') {
+        singleBox.style.display = 'flex';
+        dualBox.style.display = 'none';
+        gridBox.style.display = 'none';
+      } else if (layout === 'wheel_grid') {
+        singleBox.style.display = 'flex';
+        dualBox.style.display = 'none';
+        gridBox.style.display = 'flex';
+      } else if (layout === 'dual_wheels') {
+        singleBox.style.display = 'none';
+        dualBox.style.display = 'grid';
+        gridBox.style.display = 'none';
+      } else if (layout === 'grid_only') {
+        singleBox.style.display = 'none';
+        dualBox.style.display = 'none';
+        gridBox.style.display = 'flex';
+      }
+    }
+
+    // =========================================================================
+    // ATLAS GEOCODER & OFFLINE FALLBACK DATABASE
+    // =========================================================================
+    const FALLBACK_ATLAS_CITIES = [
+      { name: 'Buenos Aires', admin1: 'Ciudad Autónoma de Buenos Aires', country: 'Argentina', latitude: -34.6037, longitude: -58.3816, timezone: 'America/Argentina/Buenos_Aires' },
+      { name: 'Posadas', admin1: 'Provincia de Misiones', country: 'Argentina', latitude: -27.3671, longitude: -55.8961, timezone: 'America/Argentina/Cordoba' },
+      { name: 'Rosario', admin1: 'Provincia de Santa Fe', country: 'Argentina', latitude: -32.9468, longitude: -60.6393, timezone: 'America/Argentina/Cordoba' },
+      { name: 'Mar del Plata', admin1: 'Provincia de Buenos Aires', country: 'Argentina', latitude: -38.0055, longitude: -57.5426, timezone: 'America/Argentina/Buenos_Aires' },
+      { name: 'Córdoba', admin1: 'Provincia de Córdoba', country: 'Argentina', latitude: -31.4201, longitude: -64.1888, timezone: 'America/Argentina/Cordoba' },
+      { name: 'Mendoza', admin1: 'Provincia de Mendoza', country: 'Argentina', latitude: -32.8895, longitude: -68.8458, timezone: 'America/Argentina/Mendoza' },
+      { name: 'La Plata', admin1: 'Provincia de Buenos Aires', country: 'Argentina', latitude: -34.9215, longitude: -57.9545, timezone: 'America/Argentina/Buenos_Aires' },
+      { name: 'San Miguel de Tucumán', admin1: 'Provincia de Tucumán', country: 'Argentina', latitude: -26.8083, longitude: -65.2176, timezone: 'America/Argentina/Tucuman' },
+      { name: 'Salta', admin1: 'Provincia de Salta', country: 'Argentina', latitude: -24.7821, longitude: -65.4232, timezone: 'America/Argentina/Salta' },
+      { name: 'Santa Fe', admin1: 'Provincia de Santa Fe', country: 'Argentina', latitude: -31.6333, longitude: -60.7000, timezone: 'America/Argentina/Cordoba' },
+      { name: 'Corrientes', admin1: 'Provincia de Corrientes', country: 'Argentina', latitude: -27.4692, longitude: -58.8306, timezone: 'America/Argentina/Cordoba' },
+      { name: 'Resistencia', admin1: 'Provincia del Chaco', country: 'Argentina', latitude: -27.4514, longitude: -58.9867, timezone: 'America/Argentina/Cordoba' },
+      { name: 'Neuquén', admin1: 'Provincia del Neuquén', country: 'Argentina', latitude: -38.9516, longitude: -68.0591, timezone: 'America/Argentina/Salta' },
+      { name: 'San Carlos de Bariloche', admin1: 'Provincia de Río Negro', country: 'Argentina', latitude: -41.1335, longitude: -71.3103, timezone: 'America/Argentina/Salta' },
+      { name: 'Ushuaia', admin1: 'Tierra del Fuego', country: 'Argentina', latitude: -54.8019, longitude: -68.3030, timezone: 'America/Argentina/Ushuaia' },
+      { name: 'Oberá', admin1: 'Provincia de Misiones', country: 'Argentina', latitude: -27.4871, longitude: -55.1199, timezone: 'America/Argentina/Cordoba' },
+      { name: 'Puerto Iguazú', admin1: 'Provincia de Misiones', country: 'Argentina', latitude: -25.5991, longitude: -54.5736, timezone: 'America/Argentina/Cordoba' },
+      { name: 'Montevideo', admin1: 'Montevideo', country: 'Uruguay', latitude: -34.9011, longitude: -56.1645, timezone: 'America/Montevideo' },
+      { name: 'Santiago', admin1: 'Región Metropolitana', country: 'Chile', latitude: -33.4489, longitude: -70.6693, timezone: 'America/Santiago' },
+      { name: 'Asunción', admin1: 'Asunción', country: 'Paraguay', latitude: -25.2637, longitude: -57.5759, timezone: 'America/Asuncion' },
+      { name: 'São Paulo', admin1: 'São Paulo', country: 'Brasil', latitude: -23.5505, longitude: -46.6333, timezone: 'America/Sao_Paulo' },
+      { name: 'Río de Janeiro', admin1: 'Río de Janeiro', country: 'Brasil', latitude: -22.9068, longitude: -43.1729, timezone: 'America/Sao_Paulo' },
+      { name: 'Lima', admin1: 'Provincia de Lima', country: 'Perú', latitude: -12.0464, longitude: -77.0428, timezone: 'America/Lima' },
+      { name: 'Bogotá', admin1: 'Cundinamarca', country: 'Colombia', latitude: 4.7110, longitude: -74.0721, timezone: 'America/Bogota' },
+      { name: 'Medellín', admin1: 'Antioquia', country: 'Colombia', latitude: 6.2442, longitude: -75.5812, timezone: 'America/Bogota' },
+      { name: 'Quito', admin1: 'Pichincha', country: 'Ecuador', latitude: -0.1807, longitude: -78.4678, timezone: 'America/Guayaquil' },
+      { name: 'Caracas', admin1: 'Distrito Capital', country: 'Venezuela', latitude: 10.4806, longitude: -66.9036, timezone: 'America/Caracas' },
+      { name: 'La Paz', admin1: 'Departamento de La Paz', country: 'Bolivia', latitude: -16.4897, longitude: -68.1193, timezone: 'America/La_Paz' },
+      { name: 'Ciudad de México', admin1: 'CDMX', country: 'México', latitude: 19.4326, longitude: -99.1332, timezone: 'America/Mexico_City' },
+      { name: 'Madrid', admin1: 'Comunidad de Madrid', country: 'España', latitude: 40.4168, longitude: -3.7038, timezone: 'Europe/Madrid' },
+      { name: 'Barcelona', admin1: 'Cataluña', country: 'España', latitude: 41.3874, longitude: 2.1686, timezone: 'Europe/Madrid' },
+      { name: 'Londres', admin1: 'Inglaterra', country: 'Reino Unido', latitude: 51.5074, longitude: -0.1278, timezone: 'Europe/London' },
+      { name: 'París', admin1: 'Isla de Francia', country: 'Francia', latitude: 48.8566, longitude: 2.3522, timezone: 'Europe/Paris' },
+      { name: 'Roma', admin1: 'Lacio', country: 'Italia', latitude: 41.9028, longitude: 12.4964, timezone: 'Europe/Rome' },
+      { name: 'Berlín', admin1: 'Berlín', country: 'Alemania', latitude: 52.5200, longitude: 13.4050, timezone: 'Europe/Berlin' },
+      { name: 'Nueva York', admin1: 'Nueva York', country: 'Estados Unidos', latitude: 40.7128, longitude: -74.0060, timezone: 'America/New_York' },
+      { name: 'Miami', admin1: 'Florida', country: 'Estados Unidos', latitude: 25.7617, longitude: -80.1918, timezone: 'America/New_York' },
+      { name: 'Los Ángeles', admin1: 'California', country: 'Estados Unidos', latitude: 34.0522, longitude: -118.2437, timezone: 'America/Los_Angeles' },
+      { name: 'Tokio', admin1: 'Tokio', country: 'Japón', latitude: 35.6762, longitude: 139.6503, timezone: 'Asia/Tokyo' },
+    ];
+
+    function normalizeText(str) {
+      return (str || '')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .trim();
+    }
+
+    function computeTimezoneOffsetHours(ianaTz, dateStr, timeStr) {
+      if (!ianaTz) return -3;
+      try {
+        const [y, m, d] = (dateStr || '2000-01-01').split('-').map(Number);
+        const [hh, mm] = (timeStr || '12:00').split(':').map(Number);
+        const utcGuess = Date.UTC(y || 2000, (m || 1) - 1, d || 1, hh || 12, mm || 0, 0);
+        const dt = new Date(utcGuess);
+        const parts = new Intl.DateTimeFormat('en-US', {
+          timeZone: ianaTz,
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false,
+        }).formatToParts(dt);
+
+        const map = {};
+        parts.forEach(p => { map[p.type] = p.value; });
+        const tzAsUtc = Date.UTC(
+          parseInt(map.year, 10),
+          parseInt(map.month, 10) - 1,
+          parseInt(map.day, 10),
+          parseInt(map.hour, 10) % 24,
+          parseInt(map.minute, 10),
+          0
+        );
+        const diffHours = (tzAsUtc - utcGuess) / 3600000;
+        return Math.round(diffHours * 4) / 4;
+      } catch {
+        return -3;
+      }
+    }
+
+    function formatPlaceDisplayName(place) {
+      const parts = [place.name];
+      if (place.admin1 && normalizeText(place.admin1) !== normalizeText(place.name)) {
+        parts.push(place.admin1);
+      }
+      if (place.country) {
+        parts.push(place.country);
+      }
+      return parts.join(', ');
+    }
+
+    function searchLocalFallback(query) {
+      const q = normalizeText(query);
+      if (!q) return FALLBACK_ATLAS_CITIES.slice(0, 6);
+      const tokens = q.split(/[\s,]+/).filter(Boolean);
+      return FALLBACK_ATLAS_CITIES.filter(c => {
+        const hay = normalizeText(`${c.name} ${c.admin1} ${c.country}`);
+        return tokens.every(t => hay.includes(t));
+      }).slice(0, 6);
+    }
+
+    async function queryGeocodingApi(rawQuery) {
+      const trimmed = rawQuery.trim();
+      if (trimmed.length < 2) return [];
+
+      try {
+        const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(trimmed)}&count=5&language=es&format=json`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Geocoding HTTP error');
+        const data = await res.json();
+        let results = Array.isArray(data.results) ? data.results : [];
+
+        if (results.length === 0 && trimmed.includes(',')) {
+          const [cityPart, ...restParts] = trimmed.split(',');
+          const filterTerm = normalizeText(restParts.join(' '));
+          const urlRetry = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityPart.trim())}&count=10&language=es&format=json`;
+          const resRetry = await fetch(urlRetry);
+          if (resRetry.ok) {
+            const dataRetry = await resRetry.json();
+            const allRetry = Array.isArray(dataRetry.results) ? dataRetry.results : [];
+            const filtered = allRetry.filter(r => normalizeText(`${r.admin1 || ''} ${r.admin2 || ''} ${r.country || ''}`).includes(filterTerm));
+            results = (filtered.length > 0 ? filtered : allRetry).slice(0, 5);
+          }
+        }
+
+        if (results.length > 0) return results;
+      } catch (err) {
+        console.warn('Usando Atlas local de reserva:', err);
+      }
+
+      return searchLocalFallback(trimmed);
+    }
+
+    function clearCityInput(inputId, dropdownId) {
+      const inp = document.getElementById(inputId);
+      const dd = document.getElementById(dropdownId);
+      if (inp) {
+        inp.value = '';
+        inp.focus();
+      }
+      if (dd) {
+        dd.innerHTML = '';
+        dd.classList.remove('open');
+      }
+    }
+
+    function onNatalDateOrTimeChange() {
+      const inp = document.getElementById('citySearch');
+      const ianaTz = inp?.getAttribute('data-timezone');
+      if (ianaTz) {
+        const dStr = document.getElementById('txtDate').value;
+        const tStr = document.getElementById('txtTime').value;
+        const offset = computeTimezoneOffsetHours(ianaTz, dStr, tStr);
+        document.getElementById('txtTz').value = offset;
+        const badge = document.getElementById('tzLabelBadge');
+        if (badge) {
+          badge.textContent = `${ianaTz} (UTC${offset >= 0 ? '+' : ''}${offset})`;
+        }
+      }
+      calculateChart();
+    }
+
+    function setupAtlasAutocomplete(config) {
+      const {
+        inputId,
+        dropdownId,
+        latId,
+        lonId,
+        tzId,
+        dateId,
+        timeId,
+        badgeId,
+        autoRecalculate = true,
+      } = config;
+
+      const inputEl = document.getElementById(inputId);
+      const dropdownEl = document.getElementById(dropdownId);
+      if (!inputEl || !dropdownEl) return;
+
+      let debounceTimer = null;
+      let currentResults = [];
+      let activeIndex = -1;
+
+      function selectPlace(place) {
+        const fullName = formatPlaceDisplayName(place);
+        inputEl.value = fullName;
+        const ianaTz = place.timezone || 'America/Argentina/Buenos_Aires';
+        inputEl.setAttribute('data-timezone', ianaTz);
+
+        const latVal = Number(place.latitude).toFixed(4);
+        const lonVal = Number(place.longitude).toFixed(4);
+        const dateVal = dateId ? document.getElementById(dateId)?.value : document.getElementById('txtDate')?.value;
+        const timeVal = timeId ? document.getElementById(timeId)?.value : document.getElementById('txtTime')?.value;
+        const tzOffset = computeTimezoneOffsetHours(ianaTz, dateVal, timeVal);
+
+        document.getElementById(latId).value = latVal;
+        document.getElementById(lonId).value = lonVal;
+        document.getElementById(tzId).value = tzOffset;
+
+        if (badgeId) {
+          const badgeEl = document.getElementById(badgeId);
+          if (badgeEl) {
+            badgeEl.textContent = `${ianaTz} (UTC${tzOffset >= 0 ? '+' : ''}${tzOffset})`;
+          }
+        }
+
+        dropdownEl.classList.remove('open');
+        dropdownEl.innerHTML = '';
+
+        if (autoRecalculate) {
+          calculateChart();
+        }
+      }
+
+      function renderSuggestions(results) {
+        currentResults = results;
+        activeIndex = -1;
+        dropdownEl.innerHTML = '';
+
+        if (!results || results.length === 0) {
+          dropdownEl.innerHTML = '<div class="atlas-status">No se encontraron localidades coincidentes.</div>';
+          dropdownEl.classList.add('open');
+          return;
+        }
+
+        results.forEach((place) => {
+          const item = document.createElement('div');
+          item.className = 'atlas-item';
+          const displayName = formatPlaceDisplayName(place);
+          const ianaTz = place.timezone || 'UTC';
+          const dateVal = dateId ? document.getElementById(dateId)?.value : document.getElementById('txtDate')?.value;
+          const timeVal = timeId ? document.getElementById(timeId)?.value : document.getElementById('txtTime')?.value;
+          const tzOffset = computeTimezoneOffsetHours(ianaTz, dateVal, timeVal);
+
+          item.innerHTML = `
+            <div class="atlas-item-title">📍 ${displayName}</div>
+            <div class="atlas-item-meta">
+              <span>Lat: ${Number(place.latitude).toFixed(4)}°, Lon: ${Number(place.longitude).toFixed(4)}°</span>
+              <span style="color:var(--accent);font-weight:600;">${ianaTz} (UTC${tzOffset >= 0 ? '+' : ''}${tzOffset})</span>
+            </div>
+          `;
+
+          item.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            selectPlace(place);
+          });
+
+          dropdownEl.appendChild(item);
+        });
+
+        dropdownEl.classList.add('open');
+      }
+
+      inputEl.addEventListener('input', () => {
+        const q = inputEl.value.trim();
+        if (debounceTimer) clearTimeout(debounceTimer);
+
+        if (q.length < 2) {
+          dropdownEl.classList.remove('open');
+          dropdownEl.innerHTML = '';
+          return;
+        }
+
+        dropdownEl.innerHTML = '<div class="atlas-status">🔎 Buscando en el Atlas Mundial...</div>';
+        dropdownEl.classList.add('open');
+
+        debounceTimer = setTimeout(async () => {
+          const places = await queryGeocodingApi(q);
+          renderSuggestions(places);
+        }, 300);
+      });
+
+      inputEl.addEventListener('keydown', (e) => {
+        if (!dropdownEl.classList.contains('open') || currentResults.length === 0) return;
+        const items = dropdownEl.querySelectorAll('.atlas-item');
+
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          activeIndex = (activeIndex + 1) % currentResults.length;
+          items.forEach((el, i) => el.classList.toggle('active', i === activeIndex));
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          activeIndex = (activeIndex - 1 + currentResults.length) % currentResults.length;
+          items.forEach((el, i) => el.classList.toggle('active', i === activeIndex));
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          const chosen = currentResults[activeIndex >= 0 ? activeIndex : 0];
+          if (chosen) selectPlace(chosen);
+        } else if (e.key === 'Escape') {
+          dropdownEl.classList.remove('open');
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!inputEl.contains(e.target) && !dropdownEl.contains(e.target)) {
+          dropdownEl.classList.remove('open');
+        }
+      });
+    }
+
+    function onZodiacChange() {
+      const z = document.getElementById('selZodiac').value;
+      document.getElementById('ayanBox').style.display = z === 'sidereal' ? 'block' : 'none';
+      calculateChart();
+    }
+
+    function onRelocatedToggle() {
+      const checked = document.getElementById('chkRelocated').checked;
+      document.getElementById('relocFields').style.display = checked ? 'flex' : 'none';
+      calculateChart();
+    }
+
+    function onChartModeChange() {
+      const mode = document.getElementById('selChartMode').value;
+      document.getElementById('chartTypeLabel').textContent = mode.toUpperCase().replace(/_/g, ' ');
+
+      const needsTransitBox = [
+        'transits',
+        'tri_wheel',
+        'secondary_progressions',
+        'tertiary_progressions',
+        'minor_progressions',
+        'solar_arc',
+        'naibod_arc',
+        'symbolic_directions',
+        'profections',
+        'lunar_return',
+      ].includes(mode);
+      const needsReturnBox = ['solar_return', 'lunar_return'].includes(mode);
+      const needsPartnerBox = ['synastry', 'composite', 'davison'].includes(mode);
+      const needsHarmonicVarga = ['harmonic', 'varga'].includes(mode);
+
+      document.getElementById('transitBox').style.display = needsTransitBox ? 'flex' : 'none';
+      document.getElementById('returnBox').style.display = needsReturnBox ? 'flex' : 'none';
+      document.getElementById('returnYearGroup').style.display = mode === 'solar_return' ? 'flex' : 'none';
+      document.getElementById('partnerBox').style.display = needsPartnerBox ? 'flex' : 'none';
+      document.getElementById('harmonicVargaBox').style.display = needsHarmonicVarga ? 'flex' : 'none';
+      document.getElementById('harmonicNumGroup').style.display = mode === 'harmonic' ? 'flex' : 'none';
+      document.getElementById('vargaSelectGroup').style.display = mode === 'varga' ? 'flex' : 'none';
+
+      const dirExtra = document.getElementById('directionExtraBox');
+      dirExtra.style.display = (mode === 'solar_arc' || mode === 'symbolic_directions') ? 'flex' : 'none';
+      document.getElementById('lblSolarArcRA').style.display = mode === 'solar_arc' ? 'flex' : 'none';
+      document.getElementById('symbolicFactorGroup').style.display = mode === 'symbolic_directions' ? 'flex' : 'none';
+
+      calculateChart();
+    }
+
+    function setTransitNow() {
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      const hh = String(now.getHours()).padStart(2, '0');
+      const min = String(now.getMinutes()).padStart(2, '0');
+      document.getElementById('txtTransitDate').value = `${yyyy}-${mm}-${dd}`;
+      document.getElementById('txtTransitTime').value = `${hh}:${min}`;
+      calculateChart();
+    }
+
+    function stepTime(amount, unit) {
+      const dInput = document.getElementById('txtTransitDate');
+      const tInput = document.getElementById('txtTransitTime');
+      const curDate = new Date(`${dInput.value}T${tInput.value || '12:00'}`);
+
+      if (unit === 'hour') curDate.setHours(curDate.getHours() + amount);
+      if (unit === 'day') curDate.setDate(curDate.getDate() + amount);
+      if (unit === 'month') curDate.setMonth(curDate.getMonth() + amount);
+      if (unit === 'year') curDate.setFullYear(curDate.getFullYear() + amount);
+
+      const yyyy = curDate.getFullYear();
+      const mm = String(curDate.getMonth() + 1).padStart(2, '0');
+      const dd = String(curDate.getDate()).padStart(2, '0');
+      const hh = String(curDate.getHours()).padStart(2, '0');
+      const min = String(curDate.getMinutes()).padStart(2, '0');
+
+      dInput.value = `${yyyy}-${mm}-${dd}`;
+      tInput.value = `${hh}:${min}`;
+      calculateChart();
+    }
+
+    function stepReturnYear(delta) {
+      const inp = document.getElementById('txtReturnYear');
+      inp.value = parseInt(inp.value || '2026', 10) + delta;
+      calculateChart();
+    }
+
+    function switchTab(tabName) {
+      const tabs = ['planets', 'aspects', 'dignities', 'balances', 'midpoints', 'vedic', 'hitlist', 'houses'];
+      const btnIds = {
+        planets: 'btnTabPlanets',
+        aspects: 'btnTabAspects',
+        dignities: 'btnTabDignities',
+        balances: 'btnTabBalances',
+        midpoints: 'btnTabMidpoints',
+        vedic: 'btnTabVedic',
+        hitlist: 'btnTabHitList',
+        houses: 'btnTabHouses',
+      };
+      const boxIds = {
+        planets: 'tabPlanets',
+        aspects: 'tabAspects',
+        dignities: 'tabDignities',
+        balances: 'tabBalances',
+        midpoints: 'tabMidpoints',
+        vedic: 'tabVedic',
+        hitlist: 'tabHitList',
+        houses: 'tabHouses',
+      };
+
+      tabs.forEach(t => {
+        document.getElementById(boxIds[t]).style.display = t === tabName ? 'flex' : 'none';
+        document.getElementById(btnIds[t]).classList.toggle('active', t === tabName);
+      });
+    }
+
+    function getEnabledGroups() {
+      return Array.from(document.querySelectorAll('.grp-chk:checked')).map(el => el.value);
+    }
+
+    async function calculateChart() {
+      const payload = {
+        name: document.getElementById('txtName').value,
+        date: document.getElementById('txtDate').value,
+        time: document.getElementById('txtTime').value,
+        latitude: parseFloat(document.getElementById('txtLat').value),
+        longitude: parseFloat(document.getElementById('txtLon').value),
+        timezoneOffset: parseFloat(document.getElementById('txtTz').value),
+        houseSystem: document.getElementById('selHouseSys').value,
+        zodiacMode: document.getElementById('selZodiac').value,
+        ayanamsha: document.getElementById('selAyan').value,
+        coordMode: document.getElementById('selCoordMode').value,
+        useTrueNode: document.getElementById('chkTrueNode').checked,
+        chartType: document.getElementById('selChartMode').value,
+        transitDate: document.getElementById('txtTransitDate').value,
+        transitTime: document.getElementById('txtTransitTime').value,
+        returnYear: parseInt(document.getElementById('txtReturnYear').value, 10),
+        harmonicNumber: parseInt(document.getElementById('txtHarmonicNum').value, 10),
+        vargaDivision: parseInt(document.getElementById('selVargaDiv').value, 10),
+        solarArcInRA: document.getElementById('chkSolarArcRA').checked,
+        symbolicArcFactor: parseFloat(document.getElementById('txtSymbolicFactor').value),
+        triplicityScheme: document.getElementById('selTripScheme').value,
+        termScheme: document.getElementById('selTermScheme').value,
+        useRelocated: document.getElementById('chkRelocated').checked,
+        relocLat: parseFloat(document.getElementById('txtRelocLat').value),
+        relocLon: parseFloat(document.getElementById('txtRelocLon').value),
+        relocTz: parseFloat(document.getElementById('txtRelocTz').value),
+        partnerName: document.getElementById('txtPartnerName').value,
+        partnerDate: document.getElementById('txtPartnerDate').value,
+        partnerTime: document.getElementById('txtPartnerTime').value,
+        partnerLat: parseFloat(document.getElementById('txtPartnerLat').value),
+        partnerLon: parseFloat(document.getElementById('txtPartnerLon').value),
+        partnerTz: parseFloat(document.getElementById('txtPartnerTz').value),
+        enabledGroups: getEnabledGroups(),
+        includeMinor: document.getElementById('chkMinorAspects').checked,
+        includeHarmonicAspects: document.getElementById('chkHarmonicAspects').checked,
+        customOrbs: customOrbsState,
+        theme: currentTheme,
+      };
+
+      try {
+        const res = await fetch('/api/calculate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!data.success) {
+          alert('Error en el cálculo: ' + data.error);
+          return;
+        }
+        lastCalculationData = data;
+
+        // 1. Inject SVGs (Main Wheel, Dual Wheels, Aspect Staircase Grid)
+        document.getElementById('chartSvgBox').innerHTML = data.svg;
+        document.getElementById('dualLeftSvgBox').innerHTML = data.svg;
+        document.getElementById('secondarySvgBox').innerHTML = data.secondarySvg || '';
+        document.getElementById('aspectGridSvgBox').innerHTML = data.aspectGridSvg || '';
+        bindSvgInteractivity();
+
+        // 2. Update Angles, Sect & Syzygy
+        document.getElementById('lblAsc').textContent = data.ascendant.formatted;
+        document.getElementById('lblMC').textContent = data.mc.formatted;
+        document.getElementById('lblVtx').textContent = data.vertex ? data.vertex.formatted : '-';
+        document.getElementById('lblEP').textContent = data.eastPoint ? data.eastPoint.formatted : '-';
+        document.getElementById('lblSyzygy').textContent = data.syzygy
+          ? `${data.syzygy.type === 'New Moon' ? '🌑 Luna Nueva' : '🌕 Luna Llena'} (${data.syzygy.formatted})`
+          : '-';
+
+        const sectEl = document.getElementById('sectBadge');
+        sectEl.textContent = data.isDiurnal ? '☀️ Carta Diurna (Secta Solar)' : '🌙 Carta Nocturna (Secta Lunar)';
+        sectEl.className = data.isDiurnal ? 'badge badge-neutral' : 'badge badge-soft';
+
+        const banner = document.getElementById('metaBanner');
+        const bannerTxt = document.getElementById('metaBannerText');
+        if (data.meta?.exactReturnDate) {
+          banner.style.display = 'flex';
+          bannerTxt.innerHTML = `✨ <strong>Instante Exacto Calculado:</strong> ${data.meta.exactReturnDate}`;
+        } else if (data.meta?.arcDegrees !== undefined) {
+          banner.style.display = 'flex';
+          bannerTxt.innerHTML = `📐 <strong>Arco Direccional Progresado:</strong> +${data.meta.arcDegrees.toFixed(4)}° (Edad: ${data.meta.ageYears.toFixed(2)} años)`;
+        } else {
+          banner.style.display = 'none';
+        }
+
+        // 3. Populate Planets Table (with Declination, RA & Out of Bounds badge)
+        const pTbody = document.getElementById('planetsTbody');
+        pTbody.innerHTML = '';
+        document.getElementById('cntPlanets').textContent = data.planets.length;
+        data.planets.forEach(p => {
+          const tr = document.createElement('tr');
+          tr.className = 'clickable-row';
+          tr.onclick = () => highlightPlanetInWheel(p.name);
+          const speedStr = p.speed ? `${p.speed >= 0 ? '+' : ''}${p.speed.toFixed(2)}°` : '';
+          const oobBadge = p.isOutOfBounds
+            ? `<span class="badge badge-hard" title="Planeta Fuera de Límites (|Decl| > 23°26')">OOB</span>`
+            : '';
+          tr.innerHTML = `
+            <td><strong>${p.glyph} ${p.name}</strong></td>
+            <td><strong>${p.formatted}</strong></td>
+            <td>C${p.house || '-'}</td>
+            <td style="font-size:0.72rem;">${p.decFormatted || '-'} <span style="color:var(--text-muted);">(${p.raFormatted || ''})</span></td>
+            <td>
+              ${p.isRetrograde ? '<span style="color:#f87171;font-weight:700;">℞</span>' : '<span style="color:#4ade80;font-weight:600;">D</span>'}
+              <span style="font-size:0.68rem;color:var(--text-muted);">${speedStr}</span>
+              ${oobBadge}
+            </td>
+          `;
+          pTbody.appendChild(tr);
+        });
+
+        // 4. Populate Aspects, Declination Parallels & Patterns
+        const aTbody = document.getElementById('aspectsTbody');
+        aTbody.innerHTML = '';
+        const listToRender = (data.crossAspects && data.crossAspects.length > 0) ? data.crossAspects : data.aspects;
+        document.getElementById('cntAspects').textContent = listToRender.length;
+        listToRender.forEach(a => {
+          const tr = document.createElement('tr');
+          let bClass = 'badge-soft';
+          if (a.nature === 'hard') bClass = 'badge-hard';
+          else if (a.nature === 'neutral') bClass = 'badge-neutral';
+          else if (a.nature === 'minor') bClass = 'badge-minor';
+          else if (a.nature === 'harmonic') bClass = 'badge-harmonic';
+
+          const p1Label = a.label1 || a.point1;
+          const p2Label = a.label2 || a.point2;
+          tr.innerHTML = `
+            <td><span class="badge ${bClass}">${p1Label} ${a.glyph || a.abbreviation} ${p2Label}</span></td>
+            <td>${a.actualAngle.toFixed(1)}°</td>
+            <td><strong>${a.orb.toFixed(2)}°</strong></td>
+            <td style="color: var(--text-muted); font-size: 0.72rem;">${a.isApplying ? 'Aplicativo (A)' : 'Separativo (S)'}</td>
+          `;
+          aTbody.appendChild(tr);
+        });
+
+        const decTbody = document.getElementById('declAspectsTbody');
+        decTbody.innerHTML = '';
+        (data.declinationAspects || []).forEach(da => {
+          const tr = document.createElement('tr');
+          const bClass = da.type === 'Parallel' ? 'badge-neutral' : 'badge-hard';
+          tr.innerHTML = `
+            <td><strong>${da.point1.name} ${da.glyph} ${da.point2.name}</strong></td>
+            <td><span class="badge ${bClass}">${da.type === 'Parallel' ? 'Paralelo ‖' : 'Contraparalelo ⧺'}</span></td>
+            <td style="font-size:0.71rem;">${da.declination1.toFixed(2)}° / ${da.declination2.toFixed(2)}°</td>
+            <td><strong>${da.orb.toFixed(2)}°</strong></td>
+          `;
+          decTbody.appendChild(tr);
+        });
+
+        const patBox = document.getElementById('patternsListBox');
+        patBox.innerHTML = '';
+        const pats = data.patterns || [];
+        document.getElementById('cntPatterns').textContent = pats.length;
+        if (pats.length === 0) {
+          patBox.innerHTML = '<div style="color: var(--text-muted); font-size: 0.75rem;">Sin patrones cerrados mayores con los orbes actuales.</div>';
+        } else {
+          pats.forEach(pat => {
+            const div = document.createElement('div');
+            div.className = 'pattern-card';
+            div.innerHTML = `<strong>✨ ${pat.name}</strong><br><span style="color: var(--text-muted); font-size: 0.73rem;">${pat.description}</span>`;
+            patBox.appendChild(div);
+          });
+        }
+
+        // 5. Populate Dignities & Almuten Figuris
+        renderDignitiesAndAlmuten(data);
+
+        // 6. Populate Elemental Balance, Humors, Profections & Firdaria
+        renderBalancesAndFirdaria(data);
+
+        // 7. Populate Midpoint Trees & Fixed Stars
+        renderMidpointsView();
+        renderFixedStarsView(data);
+
+        // 8. Populate Vedic Nakshatras, Vargas & Arabic Parts
+        renderVedicAndLots(data);
+
+        // 9. Populate Houses
+        const hTbody = document.getElementById('housesTbody');
+        hTbody.innerHTML = '';
+        data.houses.forEach(h => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>Casa ${h.number}</strong></td>
+            <td>${h.signGlyph} ${h.sign}</td>
+            <td>${h.deg}° ${String(h.min).padStart(2,'0')}' ${String(h.sec).padStart(2,'0')}"</td>
+            <td><span class="badge badge-soft">Reg: ${h.domicileRuler}</span> <span class="badge badge-neutral">Alm: ${h.almuten}</span></td>
+          `;
+          hTbody.appendChild(tr);
+        });
+
+        if (selectedHighlightPlanet) {
+          applyWheelHighlight(selectedHighlightPlanet);
+        }
+
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function renderDignitiesAndAlmuten(data) {
+      const almCard = document.getElementById('almutenWinnerCard');
+      if (data.almuten) {
+        almCard.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <strong>👑 Almuten Figuris de la Carta: <span style="color:var(--accent);font-size:0.95rem;">${data.almuten.winner}</span></strong>
+              <div style="font-size:0.72rem; color:var(--text-muted);">
+                Puntuación Total: <strong>${data.almuten.winnerScore} pts</strong> • Regente del Día: <strong>${data.almuten.dayRuler}</strong> • Regente de la Hora: <strong>${data.almuten.hourRuler}</strong>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      const dTbody = document.getElementById('dignitiesTbody');
+      dTbody.innerHTML = '';
+      (data.dignities || []).forEach(d => {
+        const tr = document.createElement('tr');
+        const stateBadges = [];
+        if (d.essential.isDomicile) stateBadges.push('<span class="badge badge-soft">Dom (+5)</span>');
+        if (d.essential.isExaltation) stateBadges.push('<span class="badge badge-neutral">Exa (+4)</span>');
+        if (d.essential.isDetriment) stateBadges.push('<span class="badge badge-hard">Exilio (-5)</span>');
+        if (d.essential.isFall) stateBadges.push('<span class="badge badge-hard">Caída (-4)</span>');
+        if (d.essential.isPeregrine) stateBadges.push('<span class="badge badge-minor">Peregrino (-5)</span>');
+
+        const scoreColor = d.totalScore >= 5 ? '#4ade80' : d.totalScore < 0 ? '#f87171' : '#38bdf8';
+        tr.innerHTML = `
+          <td><strong>${d.glyph} ${d.planet}</strong></td>
+          <td>${d.essential.domicileRuler.slice(0,3)}</td>
+          <td>${d.essential.exaltationRuler ? d.essential.exaltationRuler.slice(0,3) : '-'}</td>
+          <td>${d.essential.triplicityRulers.participating.slice(0,3)}</td>
+          <td>${d.essential.termRuler.slice(0,3)}</td>
+          <td>${d.essential.faceRuler.slice(0,3)}</td>
+          <td style="font-size:0.68rem;">${stateBadges.join(' ')} C${d.house} (${d.accidentalScore >= 0 ? '+' : ''}${d.accidentalScore})</td>
+          <td><strong style="color:${scoreColor};">${d.totalScore >= 0 ? '+' : ''}${d.totalScore}</strong></td>
+        `;
+        dTbody.appendChild(tr);
+      });
+
+      const aTbody = document.getElementById('almutenTbody');
+      aTbody.innerHTML = '';
+      if (data.almuten?.rows) {
+        data.almuten.rows.forEach(r => {
+          const tr = document.createElement('tr');
+          const isWin = r.planet === data.almuten.winner;
+          tr.innerHTML = `
+            <td><strong>${r.glyph} ${r.planet}</strong> ${isWin ? '<span class="badge badge-neutral">★ ALMUTEN</span>' : ''}</td>
+            <td>${r.essentialShares} pts</td>
+            <td>+${r.accidentalHouseScore} pts</td>
+            <td>+${r.dayHourScore} pts</td>
+            <td><strong style="color:var(--accent);">${r.totalAlmutenScore} pts</strong></td>
+          `;
+          aTbody.appendChild(tr);
+        });
+      }
+    }
+
+    function renderBalancesAndFirdaria(data) {
+      const profCard = document.getElementById('profectionCard');
+      if (data.profection) {
+        const pf = data.profection;
+        profCard.innerHTML = `
+          <strong>🎡 Profección Anual (${pf.age} años — Año ${pf.profectedYear}): Casa ${pf.activatedHouse} en ${pf.signGlyph} ${pf.activatedSign}</strong>
+          <div style="font-size:0.73rem; color:var(--text-muted); margin-top:2px;">
+            Señor del Año (Cronocrátor): <strong style="color:var(--accent);">${pf.timeLordGlyph} ${pf.timeLord}</strong>
+            (ubicado en Casa ${pf.lordInNatalHouse || '-'} natal) • Avance Continuo: +${pf.continuousDegreeOffset.toFixed(1)}°
+          </div>
+        `;
+      }
+
+      const balBox = document.getElementById('balanceBarsBox');
+      if (data.elementalBalance) {
+        const eb = data.elementalBalance;
+        const barHtml = (label, pct, color) => `
+          <div class="bar-row">
+            <div class="bar-label"><span>${label}</span><span>${pct}%</span></div>
+            <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color};"></div></div>
+          </div>
+        `;
+        balBox.innerHTML = `
+          <div class="section-label">Balance de Elementos, Modalidades y Temperamento (${eb.temperament.dominant})</div>
+          <div class="form-row">
+            <div>
+              ${barHtml('🔥 Fuego (Colérico)', eb.elements.Fire.pct, '#f87171')}
+              ${barHtml('🌍 Tierra (Melancólico)', eb.elements.Earth.pct, '#4ade80')}
+              ${barHtml('💨 Aire (Sanguíneo)', eb.elements.Air.pct, '#fbbf24')}
+              ${barHtml('💧 Agua (Flemático)', eb.elements.Water.pct, '#38bdf8')}
+            </div>
+            <div>
+              ${barHtml('⚡ Cardinal', eb.modalities.Cardinal.pct, '#f472b6')}
+              ${barHtml('🏛️ Fijo', eb.modalities.Fixed.pct, '#a78bfa')}
+              ${barHtml('🌀 Mutable', eb.modalities.Mutable.pct, '#2dd4bf')}
+              ${barHtml(`☯ Polaridad Yang (${eb.polarities.Yang.pct}%) / Yin (${eb.polarities.Yin.pct}%)`, eb.polarities.Yang.pct, '#fb923c')}
+            </div>
+          </div>
+        `;
+      }
+
+      const fTbody = document.getElementById('firdariaTbody');
+      fTbody.innerHTML = '';
+      (data.firdaria || []).forEach(f => {
+        const tr = document.createElement('tr');
+        if (f.isCurrent) {
+          tr.style.background = 'var(--badge-soft-bg)';
+        }
+        const subs = f.subPeriods.map(sp => `${sp.subRuler.slice(0,3)} (${sp.startYear.toFixed(1)})`).join(' • ');
+        tr.innerHTML = `
+          <td><strong>${f.glyph} ${f.ruler}</strong> ${f.isCurrent ? '<span class="badge badge-neutral">ACTIVO</span>' : ''}</td>
+          <td>${f.startAge}–${f.endAge}a (${f.startYear}–${f.endYear})</td>
+          <td style="font-size:0.68rem; color:var(--text-muted);">${subs}</td>
+        `;
+        fTbody.appendChild(tr);
+      });
+    }
+
+    function renderMidpointsView() {
+      if (!lastCalculationData?.midpoints) return;
+      const dial = document.getElementById('selMidpointDial').value;
+      const list = lastCalculationData.midpoints[dial] || [];
+      const tbody = document.getElementById('midpointsTbody');
+      tbody.innerHTML = '';
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" style="color:var(--text-muted);text-align:center;">Sin estructuras de puntos medios dentro del orbe en este dial.</td></tr>';
+        return;
+      }
+      list.forEach(m => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${m.pair1} / ${m.pair2} = <span style="color:var(--accent);">${m.focalPoint}</span></strong></td>
+          <td>${m.midpointLongitude.toFixed(2)}°</td>
+          <td><span class="badge badge-soft">${m.orb.toFixed(2)}°</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderFixedStarsView(data) {
+      const scTbody = document.getElementById('starConjTbody');
+      scTbody.innerHTML = '';
+      const conjs = data.starConjunctions || [];
+      if (conjs.length === 0) {
+        scTbody.innerHTML = '<tr><td colspan="4" style="color:var(--text-muted);text-align:center;">Ninguna de las 30 estrellas fijas mayores está a ≤ 1.5° de un planeta o ángulo.</td></tr>';
+      } else {
+        conjs.forEach(c => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>⭐ ${c.starName}</strong> (${c.starFormatted})</td>
+            <td style="font-size:0.71rem;">${c.constellation} (Mag ${c.magnitude}) • ${c.nature}</td>
+            <td><span class="badge badge-neutral">${c.targetGlyph} ${c.targetName}</span></td>
+            <td><strong>${c.orb.toFixed(2)}°</strong></td>
+          `;
+          scTbody.appendChild(tr);
+        });
+      }
+
+      const allTbody = document.getElementById('allStarsTbody');
+      allTbody.innerHTML = '';
+      (data.fixedStars || []).forEach(st => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${st.name}</strong> <span style="color:var(--text-muted);font-size:0.68rem;">(${st.constellation})</span></td>
+          <td>${st.formatted} (C${st.house})</td>
+          <td>${st.decFormatted}</td>
+          <td><span class="badge badge-minor">${st.nature}</span></td>
+        `;
+        allTbody.appendChild(tr);
+      });
+    }
+
+    function renderVedicAndLots(data) {
+      const nTbody = document.getElementById('nakshatrasTbody');
+      nTbody.innerHTML = '';
+      (data.nakshatras || []).forEach(n => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${n.glyph} ${n.planet}</strong></td>
+          <td><strong>${n.nakshatraName}</strong> (Pada ${n.pada})</td>
+          <td><span class="badge badge-soft">${n.ruler}</span></td>
+          <td>${n.d1}</td>
+          <td><strong>${n.d9Formatted}</strong></td>
+          <td>${n.d10}</td>
+          <td>${n.d60}</td>
+        `;
+        nTbody.appendChild(tr);
+      });
+
+      const aTbody = document.getElementById('arabicPartsTbody');
+      aTbody.innerHTML = '';
+      (data.arabicParts || []).forEach(lot => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${lot.glyph} ${lot.spanishName}</strong><br><span style="font-size:0.67rem;color:var(--text-muted);">${lot.formula}</span></td>
+          <td><strong>${lot.formatted}</strong></td>
+          <td>Casa ${lot.house}</td>
+          <td><span class="badge badge-soft">Reg: ${lot.ruler}</span> <span class="badge badge-neutral">Alm: ${lot.almuten}</span></td>
+        `;
+        aTbody.appendChild(tr);
+      });
+    }
+
+    async function runTransitHitScanner() {
+      const tbody = document.getElementById('hitListTbody');
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--accent);padding:1rem;">⏳ Escaneando efemérides y refinando aspectos exactos...</td></tr>';
+
+      const payload = {
+        date: document.getElementById('txtDate').value,
+        time: document.getElementById('txtTime').value,
+        latitude: parseFloat(document.getElementById('txtLat').value),
+        longitude: parseFloat(document.getElementById('txtLon').value),
+        timezoneOffset: parseFloat(document.getElementById('txtTz').value),
+        houseSystem: document.getElementById('selHouseSys').value,
+        zodiacMode: document.getElementById('selZodiac').value,
+        ayanamsha: document.getElementById('selAyan').value,
+        startDate: document.getElementById('txtHitStart').value,
+        daysSpan: parseInt(document.getElementById('selHitSpan').value, 10),
+        includeMinor: document.getElementById('chkMinorAspects').checked,
+      };
+
+      try {
+        const res = await fetch('/api/transit-hits', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        tbody.innerHTML = '';
+        if (!data.success || !data.hits || data.hits.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:1rem;">No se detectaron aspectos exactos en este intervalo.</td></tr>';
+          return;
+        }
+        data.hits.forEach(h => {
+          const tr = document.createElement('tr');
+          const bClass = h.aspectNature === 'hard' ? 'badge-hard' : h.aspectNature === 'soft' ? 'badge-soft' : 'badge-neutral';
+          tr.innerHTML = `
+            <td style="font-size:0.72rem;"><strong>${h.dateFormatted}</strong></td>
+            <td><strong>${h.transitingGlyph} ${h.transitingBody}</strong> ${h.isRetrograde ? '<span style="color:#f87171;">℞</span>' : ''}</td>
+            <td><span class="badge ${bClass}">${h.aspectGlyph} ${h.aspectName}</span></td>
+            <td><strong>${h.natalGlyph} ${h.natalTarget}</strong> (${h.natalPosition})</td>
+            <td>${h.exactPosition}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#f87171;padding:1rem;">Error al ejecutar el escáner.</td></tr>';
+      }
+    }
+
+    // Interactive SVG Tooltips & Click-to-Highlight
+    function bindSvgInteractivity() {
+      const tooltip = document.getElementById('chartTooltip');
+      const svgs = document.querySelectorAll('#chartSvgBox svg, #dualWheelsBox svg');
+
+      svgs.forEach(svg => {
+        svg.addEventListener('click', (e) => {
+          if (e.target.tagName === 'svg' || e.target.classList.contains('chart-bg') || e.target.tagName === 'circle') {
+            clearPlanetHighlight();
+          }
+        });
+
+        svg.querySelectorAll('.planet-group').forEach(grp => {
+          grp.addEventListener('mouseenter', () => {
+            const raw = grp.getAttribute('data-info');
+            if (!raw) return;
+            try {
+              const info = JSON.parse(raw);
+              tooltip.innerHTML = `
+                <div style="font-size:0.88rem;font-weight:700;color:#38bdf8;margin-bottom:2px;">
+                  ${info.glyph} ${info.name} ${info.retrograde ? '<span style="color:#f87171;">(Retrógrado ℞)</span>' : ''}
+                </div>
+                <div><strong>Posición:</strong> ${info.position}</div>
+                <div><strong>Casa:</strong> Casa ${info.house} ${info.speed ? ` • <strong>Vel:</strong> ${info.speed}` : ''}</div>
+                <div style="margin-top:4px;font-size:0.71rem;color:#cbd5e1;border-top:1px solid #1e2d45;padding-top:3px;">
+                  <strong>Aspectos:</strong> ${info.aspects}
+                </div>
+              `;
+              tooltip.style.display = 'block';
+            } catch {}
+          });
+
+          grp.addEventListener('mousemove', (e) => {
+            tooltip.style.left = (e.clientX + 14) + 'px';
+            tooltip.style.top = (e.clientY + 14) + 'px';
+          });
+
+          grp.addEventListener('mouseleave', () => {
+            tooltip.style.display = 'none';
+          });
+
+          grp.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const pName = grp.getAttribute('data-planet');
+            if (pName) highlightPlanetInWheel(pName);
+          });
+        });
+
+        svg.querySelectorAll('.aspect-chord').forEach(line => {
+          line.addEventListener('mouseenter', () => {
+            const tip = line.getAttribute('data-tooltip');
+            if (!tip) return;
+            tooltip.innerHTML = `<strong>${tip}</strong>`;
+            tooltip.style.display = 'block';
+          });
+          line.addEventListener('mousemove', (e) => {
+            tooltip.style.left = (e.clientX + 14) + 'px';
+            tooltip.style.top = (e.clientY + 14) + 'px';
+          });
+          line.addEventListener('mouseleave', () => {
+            tooltip.style.display = 'none';
+          });
+        });
+      });
+    }
+
+    function highlightPlanetInWheel(planetName) {
+      if (selectedHighlightPlanet === planetName) {
+        clearPlanetHighlight();
+        return;
+      }
+      selectedHighlightPlanet = planetName;
+      applyWheelHighlight(planetName);
+    }
+
+    function applyWheelHighlight(planetName) {
+      const svgs = document.querySelectorAll('#chartSvgBox svg, #dualWheelsBox svg');
+      if (svgs.length === 0) return;
+
+      document.getElementById('highlightBar').style.display = 'flex';
+      document.getElementById('highlightPlanetName').textContent = planetName;
+
+      svgs.forEach(svg => {
+        const connectedPlanets = new Set([planetName]);
+        svg.querySelectorAll('.aspect-chord').forEach(line => {
+          const p1 = line.getAttribute('data-p1');
+          const p2 = line.getAttribute('data-p2');
+          if (p1 === planetName || p2 === planetName) {
+            line.style.opacity = '1';
+            line.style.strokeWidth = '4.2px';
+            if (p1) connectedPlanets.add(p1);
+            if (p2) connectedPlanets.add(p2);
+          } else {
+            line.style.opacity = '0.08';
+          }
+        });
+
+        svg.querySelectorAll('.planet-group').forEach(grp => {
+          const p = grp.getAttribute('data-planet');
+          grp.style.opacity = connectedPlanets.has(p) ? '1' : '0.25';
+        });
+      });
+    }
+
+    function clearPlanetHighlight() {
+      selectedHighlightPlanet = null;
+      document.getElementById('highlightBar').style.display = 'none';
+      const svgs = document.querySelectorAll('#chartSvgBox svg, #dualWheelsBox svg');
+      svgs.forEach(svg => {
+        svg.querySelectorAll('.aspect-chord').forEach(line => {
+          line.style.opacity = '';
+          line.style.strokeWidth = '';
+        });
+        svg.querySelectorAll('.planet-group').forEach(grp => {
+          grp.style.opacity = '1';
+        });
+      });
+    }
+
+    function downloadSVG() {
+      const svg = document.querySelector('#chartSvgBox svg');
+      if (!svg) return;
+      const blob = new Blob([svg.outerHTML], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `moonwater_chart_${Date.now()}.svg`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function exportPNG() {
+      const svg = document.querySelector('#chartSvgBox svg');
+      if (!svg) return;
+      const clone = svg.cloneNode(true);
+      clone.setAttribute('width', '2400');
+      clone.setAttribute('height', '2460');
+      const svgString = new XMLSerializer().serializeToString(clone);
+      const img = new Image();
+      img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString)));
+      img.onload = () => {
+        const canvas = document.getElementById('exportCanvas');
+        canvas.width = 2400;
+        canvas.height = 2460;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, 2400, 2460);
+        const pngUrl = canvas.toDataURL('image/png');
+        const a = document.createElement('a');
+        a.href = pngUrl;
+        a.download = `moonwater_chart_300dpi_${Date.now()}.png`;
+        a.click();
+      };
+    }
+
+    async function saveCurrentChart() {
+      const chartObj = {
+        name: document.getElementById('txtName').value,
+        date: document.getElementById('txtDate').value,
+        time: document.getElementById('txtTime').value,
+        latitude: parseFloat(document.getElementById('txtLat').value),
+        longitude: parseFloat(document.getElementById('txtLon').value),
+        timezoneOffset: parseFloat(document.getElementById('txtTz').value),
+        cityName: document.getElementById('citySearch').value,
+        roddenRating: document.getElementById('selRodden').value,
+        category: document.getElementById('selCategory').value,
+        notes: document.getElementById('txtNotes').value,
+        houseSystem: document.getElementById('selHouseSys').value,
+        zodiacMode: document.getElementById('selZodiac').value,
+      };
+
+      await fetch('/api/charts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(chartObj),
+      });
+      alert('Carta guardada correctamente en la base de datos local con Rodden Rating ' + chartObj.roddenRating + '.');
+    }
+
+    async function openSavedChartsModal() {
+      document.getElementById('chartsModal').style.display = 'flex';
+      const res = await fetch('/api/charts');
+      const data = await res.json();
+      cachedSavedCharts = data.charts || [];
+      filterSavedChartsTable();
+    }
+
+    function filterSavedChartsTable() {
+      const q = normalizeText(document.getElementById('txtDbSearch').value);
+      const tbody = document.getElementById('savedChartsTbody');
+      tbody.innerHTML = '';
+
+      const filtered = cachedSavedCharts.filter(c => {
+        if (!q) return true;
+        const hay = normalizeText(`${c.name} ${c.cityName || ''} ${c.category || ''} ${c.roddenRating || ''} ${c.notes || ''}`);
+        return hay.includes(q);
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:1rem;">No hay cartas coincidentes en la base de datos.</td></tr>';
+        return;
+      }
+
+      filtered.forEach(c => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>
+            <strong>${c.name}</strong>
+            ${c.notes ? `<div style="font-size:0.68rem;color:var(--text-muted);">${c.notes}</div>` : ''}
+          </td>
+          <td>
+            <div style="display:inline-flex;gap:0.25rem;flex-wrap:wrap;align-items:center;">
+              <span class="badge badge-neutral">${c.roddenRating || 'AA'}</span>
+              <span class="badge badge-soft">${c.category || 'Natal'}</span>
+            </div>
+          </td>
+          <td style="white-space:nowrap;">${c.date} ${c.time}</td>
+          <td>${c.cityName ? c.cityName : `${Number(c.latitude).toFixed(2)}°, ${Number(c.longitude).toFixed(2)}°`}</td>
+          <td style="white-space:nowrap;">
+            <div style="display:inline-flex;gap:0.35rem;align-items:center;">
+              <button class="btn-action" onclick='loadChart(${JSON.stringify(c)})'>Cargar</button>
+              <button class="btn-action" style="color:#f87171;" onclick="deleteChart('${c.id}')">Eliminar</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function closeSavedChartsModal() {
+      document.getElementById('chartsModal').style.display = 'none';
+    }
+
+    function loadChart(c) {
+      document.getElementById('txtName').value = c.name;
+      document.getElementById('txtDate').value = c.date;
+      document.getElementById('txtTime').value = c.time;
+      document.getElementById('txtLat').value = c.latitude;
+      document.getElementById('txtLon').value = c.longitude;
+      document.getElementById('txtTz').value = c.timezoneOffset;
+      if (c.cityName) document.getElementById('citySearch').value = c.cityName;
+      if (c.roddenRating) document.getElementById('selRodden').value = c.roddenRating;
+      if (c.category) document.getElementById('selCategory').value = c.category;
+      if (c.notes !== undefined) document.getElementById('txtNotes').value = c.notes;
+      if (c.houseSystem) document.getElementById('selHouseSys').value = c.houseSystem;
+      if (c.zodiacMode) document.getElementById('selZodiac').value = c.zodiacMode;
+      closeSavedChartsModal();
+      calculateChart();
+    }
+
+    async function deleteChart(id) {
+      if (!confirm('¿Eliminar esta carta de la base de datos?')) return;
+      await fetch(`/api/charts/${id}`, { method: 'DELETE' });
+      openSavedChartsModal();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setupAtlasAutocomplete({
+        inputId: 'citySearch',
+        dropdownId: 'citySuggestions',
+        latId: 'txtLat',
+        lonId: 'txtLon',
+        tzId: 'txtTz',
+        dateId: 'txtDate',
+        timeId: 'txtTime',
+        badgeId: 'tzLabelBadge',
+        autoRecalculate: true,
+      });
+
+      setupAtlasAutocomplete({
+        inputId: 'relocCitySearch',
+        dropdownId: 'relocCitySuggestions',
+        latId: 'txtRelocLat',
+        lonId: 'txtRelocLon',
+        tzId: 'txtRelocTz',
+        dateId: 'txtTransitDate',
+        timeId: 'txtTransitTime',
+        autoRecalculate: true,
+      });
+
+      setupAtlasAutocomplete({
+        inputId: 'partnerCitySearch',
+        dropdownId: 'partnerCitySuggestions',
+        latId: 'txtPartnerLat',
+        lonId: 'txtPartnerLon',
+        tzId: 'txtPartnerTz',
+        dateId: 'txtPartnerDate',
+        timeId: 'txtPartnerTime',
+        autoRecalculate: true,
+      });
+
+      calculateChart();
+    });
+  </script>
+</body>
+</html>

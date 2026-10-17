@@ -1,0 +1,282 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SolarFire 9 Binary Specifications",
+  "generated_at": "2026-10-17T03:10:00Z",
+  "target_binary": {
+    "file_name": "SolarFire.exe",
+    "path": "c:\\Users\\kitve\\Documents\\moonwater\\SolarFire.exe",
+    "sha256": "ff637dbcfdc51814876055942a77c8c7a36ea5978584a8f1665e099172e8c5bb",
+    "architecture": "x86 (32-bit)",
+    "executable_type": "PE32 (0x010B)",
+    "runtime": "Visual Basic 6.0 (MSVBVM60.DLL)"
+  },
+  "swedll32_functions": [
+    {
+      "symbol": "_swe_calc@24",
+      "stack_bytes": 24,
+      "purpose": "Calculates planetary/celestial body positions, coordinates and speeds"
+    },
+    {
+      "symbol": "_swe_close@0",
+      "stack_bytes": 0,
+      "purpose": "Closes all open ephemeris files and frees allocated memory"
+    },
+    {
+      "symbol": "_swe_cotrans@16",
+      "stack_bytes": 16,
+      "purpose": "Coordinate transformation between ecliptic and equatorial systems"
+    },
+    {
+      "symbol": "_swe_cotrans_sp@16",
+      "stack_bytes": 16,
+      "purpose": "Coordinate transformation with position and speed vectors"
+    },
+    {
+      "symbol": "_swe_cs2degstr@8",
+      "stack_bytes": 8,
+      "purpose": "Converts centiseconds to degree string representation"
+    },
+    {
+      "symbol": "_swe_cs2lonlatstr@16",
+      "stack_bytes": 16,
+      "purpose": "Converts centiseconds to longitude/latitude string"
+    },
+    {
+      "symbol": "_swe_cs2timestr@16",
+      "stack_bytes": 16,
+      "purpose": "Converts centiseconds to time string representation"
+    },
+    {
+      "symbol": "_swe_csnorm@4",
+      "stack_bytes": 4,
+      "purpose": "Normalizes centiseconds into [0, 360*360000)"
+    },
+    {
+      "symbol": "_swe_csroundsec@4",
+      "stack_bytes": 4,
+      "purpose": "Rounds centiseconds to the nearest full second"
+    },
+    {
+      "symbol": "_swe_d2l@8",
+      "stack_bytes": 8,
+      "purpose": "Converts floating point double degree value to centiseconds integer"
+    },
+    {
+      "symbol": "_swe_date_conversion@28",
+      "stack_bytes": 28,
+      "purpose": "Converts between calendar date/time and Julian Day"
+    },
+    {
+      "symbol": "_swe_day_of_week@8",
+      "stack_bytes": 8,
+      "purpose": "Returns day of the week from Julian Day"
+    },
+    {
+      "symbol": "_swe_degnorm@8",
+      "stack_bytes": 8,
+      "purpose": "Normalizes degrees to [0.0, 360.0)"
+    },
+    {
+      "symbol": "_swe_deltat@8",
+      "stack_bytes": 8,
+      "purpose": "Calculates Delta T (difference between Ephemeris Time and Universal Time)"
+    },
+    {
+      "symbol": "_swe_difcs2n@8",
+      "stack_bytes": 8,
+      "purpose": "Difference of centiseconds normalized to [-180, 180]"
+    },
+    {
+      "symbol": "_swe_difcsn@8",
+      "stack_bytes": 8,
+      "purpose": "Difference of centiseconds normalized to [0, 360]"
+    },
+    {
+      "symbol": "_swe_difdeg2n@16",
+      "stack_bytes": 16,
+      "purpose": "Difference between degree positions normalized to [-180, 180]"
+    },
+    {
+      "symbol": "_swe_difdegn@16",
+      "stack_bytes": 16,
+      "purpose": "Difference between degree positions normalized to [0, 360]"
+    },
+    {
+      "symbol": "_swe_fixstar@24",
+      "stack_bytes": 24,
+      "purpose": "Calculates positions for fixed stars"
+    },
+    {
+      "symbol": "_swe_get_planet_name@8",
+      "stack_bytes": 8,
+      "purpose": "Retrieves the standard name for a celestial body ID"
+    },
+    {
+      "symbol": "_swe_get_tid_acc@0",
+      "stack_bytes": 0,
+      "purpose": "Gets tidal acceleration parameter"
+    },
+    {
+      "symbol": "_swe_house_pos@36",
+      "stack_bytes": 36,
+      "purpose": "Calculates house position of a point in a given house system"
+    },
+    {
+      "symbol": "_swe_houses@36",
+      "stack_bytes": 36,
+      "purpose": "Calculates house cusps and Ascendant/MC from geographic position and time"
+    },
+    {
+      "symbol": "_swe_houses_armc@36",
+      "stack_bytes": 36,
+      "purpose": "Calculates house cusps directly from ARMC (sidereal time) and geographic latitude"
+    },
+    {
+      "symbol": "_swe_julday@24",
+      "stack_bytes": 24,
+      "purpose": "Calculates Julian Day Number from year, month, day, and fractional hour"
+    },
+    {
+      "symbol": "_swe_lun_eclipse_how@24",
+      "stack_bytes": 24,
+      "purpose": "Determines lunar eclipse attributes and magnitude"
+    },
+    {
+      "symbol": "_swe_lun_eclipse_when@28",
+      "stack_bytes": 28,
+      "purpose": "Calculates the time of upcoming or past lunar eclipses"
+    },
+    {
+      "symbol": "_swe_nod_aps@40",
+      "stack_bytes": 40,
+      "purpose": "Calculates planetary nodes and apsides"
+    },
+    {
+      "symbol": "_swe_pheno@24",
+      "stack_bytes": 24,
+      "purpose": "Calculates planetary phenomena (phase angle, elongation, apparent diameter, magnitude)"
+    },
+    {
+      "symbol": "_swe_revjul@28",
+      "stack_bytes": 28,
+      "purpose": "Converts Julian Day Number back to calendar date and hour"
+    },
+    {
+      "symbol": "_swe_set_ephe_path@4",
+      "stack_bytes": 4,
+      "purpose": "Sets the filesystem path where Swiss Ephemeris data files (.se1, .swe) are located"
+    },
+    {
+      "symbol": "_swe_set_jpl_file@4",
+      "stack_bytes": 4,
+      "purpose": "Configures optional JPL DE ephemeris binary file"
+    },
+    {
+      "symbol": "_swe_set_tid_acc@8",
+      "stack_bytes": 8,
+      "purpose": "Sets tidal acceleration parameter for lunar calculations"
+    },
+    {
+      "symbol": "_swe_set_topo@24",
+      "stack_bytes": 24,
+      "purpose": "Configures topocentric observer coordinates (longitude, latitude, elevation)"
+    },
+    {
+      "symbol": "_swe_sidtime@8",
+      "stack_bytes": 8,
+      "purpose": "Calculates Greenwich Sidereal Time from Julian Day"
+    },
+    {
+      "symbol": "_swe_sidtime0@24",
+      "stack_bytes": 24,
+      "purpose": "Calculates sidereal time with explicit obliquity and nutation"
+    },
+    {
+      "symbol": "_swe_sol_eclipse_how@24",
+      "stack_bytes": 24,
+      "purpose": "Determines solar eclipse attributes for a specific location"
+    },
+    {
+      "symbol": "_swe_sol_eclipse_when_glob@28",
+      "stack_bytes": 28,
+      "purpose": "Finds global solar eclipse timings"
+    },
+    {
+      "symbol": "_swe_sol_eclipse_when_loc@32",
+      "stack_bytes": 32,
+      "purpose": "Finds local solar eclipse timings and visibility for geographic coordinates"
+    },
+    {
+      "symbol": "_swe_sol_eclipse_where@24",
+      "stack_bytes": 24,
+      "purpose": "Calculates central eclipse line and geographic coordinates"
+    },
+    {
+      "symbol": "_swe_time_equ@16",
+      "stack_bytes": 16,
+      "purpose": "Calculates the equation of time"
+    }
+  ],
+  "house_systems": [
+    { "code": "P", "name": "Placidus", "notes": "Primary default system with mundane position support" },
+    { "code": "K", "name": "Koch", "notes": "GOHS system" },
+    { "code": "C", "name": "Campanus", "notes": "Prime vertical division" },
+    { "code": "R", "name": "Regiomontanus", "notes": "Equatorial system used for horary and primary directions" },
+    { "code": "T", "name": "Topocentric", "notes": "Polich-Page system" },
+    { "code": "A", "name": "Equal", "notes": "Equal 30-degree houses starting from Ascendant; used also as extreme latitude fallback" },
+    { "code": "W", "name": "Whole Signs", "notes": "Whole zodiac sign per house" },
+    { "code": "O", "name": "Porphyry", "notes": "Trisection of ecliptic quadrants" },
+    { "code": "B", "name": "Alcabitius", "notes": "Semi-arc system" },
+    { "code": "M", "name": "Morinus", "notes": "Equatorial house system" },
+    { "code": "X", "name": "Meridian", "notes": "Zariel / Axial rotation system" }
+  ],
+  "calculation_flags_and_constants": {
+    "environment_variables": [
+      {
+        "name": "SE_EPHE_PATH",
+        "description": "Environment variable and path constant passed to _swe_set_ephe_path for locating .se1 ephemeris files"
+      }
+    ],
+    "swe_calc_flags": [
+      { "name": "SEFLG_JPLEPH", "value": 1, "description": "Use JPL DE406 ephemeris" },
+      { "name": "SEFLG_SWIEPH", "value": 2, "description": "Use Swiss Ephemeris compressed files (.se1)" },
+      { "name": "SEFLG_MOSEPH", "value": 4, "description": "Use Moshier semi-analytical ephemeris (fallback when no data files exist)" },
+      { "name": "SEFLG_HELCTR", "value": 8, "description": "Heliocentric position" },
+      { "name": "SEFLG_TRUEPOS", "value": 16, "description": "True geometric position (without light-time delay)" },
+      { "name": "SEFLG_J2000", "value": 32, "description": "Coordinates relative to J2000 equinox" },
+      { "name": "SEFLG_NONUT", "value": 64, "description": "No nutation" },
+      { "name": "SEFLG_SPEED3", "value": 128, "description": "High precision speed calculation from 3 positions" },
+      { "name": "SEFLG_SPEED", "value": 256, "description": "Calculates speed vector in coordinate output" },
+      { "name": "SEFLG_NOGDEFL", "value": 512, "description": "No gravitational deflection" },
+      { "name": "SEFLG_NOABERR", "value": 1024, "description": "No annual aberration" },
+      { "name": "SEFLG_EQUATORIAL", "value": 2048, "description": "Equatorial coordinates (Right Ascension / Declination)" },
+      { "name": "SEFLG_XYZ", "value": 4096, "description": "Cartesian coordinates (x, y, z)" },
+      { "name": "SEFLG_RADIANS", "value": 8192, "description": "Coordinates in radians instead of degrees" },
+      { "name": "SEFLG_BARYCTR", "value": 16384, "description": "Barycentric coordinates" },
+      { "name": "SEFLG_TOPOCTR", "value": 32768, "description": "Topocentric coordinates based on observer location set by _swe_set_topo" },
+      { "name": "SEFLG_SIDEREAL", "value": 65536, "description": "Sidereal zodiac coordinates" }
+    ]
+  },
+  "file_formats_and_tables": {
+    "configuration_ini": [
+      { "file": "solfire.ini / Solfire9.ini", "role": "Main Solar Fire 9 application settings" },
+      { "file": "SFSettings.ini", "role": "General program preferences" },
+      { "file": "SFDesktop.ini", "role": "Desktop workspace layout and state" },
+      { "file": "AspPat.ini", "role": "Aspect patterns definitions (Grand Trines, T-Squares, etc.)" },
+      { "file": "colschem.ini / dyncols.ini / EclCols.ini", "role": "Color schemes, dynamic tables, and eclipse display styling" },
+      { "file": "pages.ini", "role": "Page display definitions and widget configuration" },
+      { "file": "rays.ini / raysbakr.ini", "role": "Esoteric 7-ray astrological parameters" },
+      { "file": "acsatlas.ini / Country.INI / State.INI", "role": "ACS PC Atlas configuration and geographical databases" },
+      { "file": "KeplerAstrology.ini", "role": "Kepler interchange options" }
+    ],
+    "data_and_table_formats": [
+      { "extension": ".dat", "examples": ["AstGlyphs2.dat", "acsia.dat", "acstt.dat", "acsua.dat", "etpa.dat", "sfexport.dat"], "description": "Binary tables for fonts, atlas time changes, coordinates, and internal export archives" },
+      { "extension": ".sfp", "examples": ["*.sfp"], "description": "Solar Fire Page / Point / Preference file format" },
+      { "extension": ".asp", "examples": ["hyleg.asp"], "description": "Aspect definitions, orbs, and astrological point criteria" },
+      { "extension": ".txt", "examples": ["dynamic.txt", "interps.txt", "PageCatalog.txt", "seasnam.txt", "tztable.txt"], "description": "Human-readable plain text tables for time zones, catalog index, interpretations, and seasons" },
+      { "extension": ".csv", "examples": ["*.csv"], "description": "Tabular export/import data format" },
+      { "extension": ".wmf", "examples": ["*.wmf"], "description": "Vector Windows Metafile graphics used for rendering wheels and ephemeris tables (CreateEphemWMF)" },
+      { "extension": ".se1 / .swe", "examples": ["*.se1"], "description": "Swiss Ephemeris planetary ephemeris binary data files read by swedll32.dll" }
+    ]
+  }
+}

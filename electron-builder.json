@@ -1,0 +1,40 @@
+{
+  "appId": "com.moonwater.astrology",
+  "productName": "Moonwater Astrology",
+  "directories": {
+    "output": "dist-electron"
+  },
+  "files": [
+    "dist/**/*",
+    "public/**/*",
+    "node_modules/**/*",
+    "package.json"
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "portable",
+        "arch": ["x64"]
+      },
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      }
+    ],
+    "requestedExecutionLevel": "asInvoker"
+  },
+  "portable": {
+    "artifactName": "Moonwater-Astrology-Portable-${version}.exe"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "artifactName": "Moonwater-Astrology-Setup-${version}.exe"
+  },
+  "asar": true,
+  "asarUnpack": [
+    "**/node_modules/@kuntay/swisseph/**",
+    "**/node_modules/@kuntay/swisseph-data/**"
+  ]
+}
