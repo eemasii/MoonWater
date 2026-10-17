@@ -1,11 +1,15 @@
 # Dependencies
 node_modules/
 
-# Build outputs & Electron binaries
+# Build intermediate outputs
 dist/
-dist-electron/
-*.exe
-*.blockmap
+dist-electron/win-unpacked/
+dist-electron/*.yaml
+dist-electron/*.blockmap
+dist-electron/.*
+
+# Reference binary
+SolarFire.exe
 
 # Environment & credentials
 .env
